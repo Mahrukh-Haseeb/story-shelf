@@ -506,16 +506,16 @@
 
     <!-- ===== QUIZ SECTION ===== -->
     <div class="quiz-container" id="quizContainer">
-      <div class="quiz-question" id="quizQuestion">🤔 Not sure what to log? Take this quick quiz!</div>
+      <div class="quiz-question" id="quizQuestion">Not sure what to log? Try these options</div>
       <div class="quiz-options" id="quizOptions">
-        <button class="quiz-opt" data-value="book">📗 I want to get lost in a story</button>
-        <button class="quiz-opt" data-value="film">🎞️ I'm in the mood for a film</button>
-        <button class="quiz-opt" data-value="music">🎵 I need some new music</button>
-        <button class="quiz-opt" data-value="journal">☕ I want to reflect on my day</button>
+        <button class="quiz-opt" data-value="book"> I want to get lost in a story</button>
+        <button class="quiz-opt" data-value="film"> I'm in the mood for a film</button>
+        <button class="quiz-opt" data-value="music"> I need some new music</button>
+        <button class="quiz-opt" data-value="journal"> I want to reflect on my day</button>
         <button class="quiz-opt" data-value="random">✨ Surprise me!</button>
       </div>
       <div class="quiz-result" id="quizResult"></div>
-      <button class="quiz-reset" id="quizReset">↺ take another quiz</button>
+      <button class="quiz-reset" id="quizReset">↺ Try again</button>
     </div>
 
     <section>
@@ -540,9 +540,6 @@
     <div class="blog-title">
       <h2>your pages</h2>
       <p>every reflection, in the order you wrote them</p>
-    </div>
-    <div class="toolbar">
-      <button class="toolbar-btn" id="exportBtn">📤 export as DOCX</button>
     </div>
     <input class="search-box" id="blogSearch" placeholder="🔍 search through your pages...">
     <div id="blogContent"></div>
@@ -984,7 +981,7 @@
     plank1.innerHTML = '';
     const filtered = season === 'all' ? entries : entries.filter(e => SEASON_OF_MONTH[e.month] === season);
     if(filtered.length === 0){
-      plank1.innerHTML = `<div class="empty-note">the counter is empty. Log the first thing you're reading, watching, or listening to. ☕</div>`;
+      plank1.innerHTML = `<div class="empty-note">The counter is empty. Log the first thing you're reading, watching, or listening to. ☕</div>`;
       return;
     }
     filtered.forEach((e) => {
@@ -1099,142 +1096,7 @@
     });
   }
 
-  document.getElementById('blogSearch').addEventListener('input', (e) => {
-    renderBlog(e.target.value.toLowerCase().trim());
-  });
-
-  // ============ EXPORT AS DOCX ============
-  document.getElementById('exportBtn').addEventListener('click', async function() {
-    try {
-      // Load docx library dynamically
-      if (typeof window.docx === 'undefined') {
-        showToast('⏳ Loading DOCX library...');
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.min.js';
-        await new Promise((resolve, reject) => {
-          script.onload = resolve;
-          script.onerror = () => reject(new Error('Failed to load DOCX library'));
-          document.head.appendChild(script);
-        });
-        // Wait for library to initialize
-        await new Promise(r => setTimeout(r, 800));
-        if (typeof window.docx === 'undefined') {
-          throw new Error('DOCX library failed to load. Please refresh and try again.');
-        }
-      }
-      
-      const { Document, Packer, Paragraph, TextRun } = window.docx;
-      
-      // Filter out welcome entry
-      const realEntries = entries.filter(e => !isWelcomeEntry(e));
-      
-      if (realEntries.length === 0) {
-        showToast('📝 No entries to export! Add some first.');
-        return;
-      }
-      
-      const children = [
-        new Paragraph({
-          children: [
-            new TextRun({
-              text: "☕ StoryShelf Café - My Entries",
-              size: 36,
-              bold: true
-            })
-          ],
-          spacing: { after: 300 }
-        }),
-        new Paragraph({
-          children: [
-            new TextRun({
-              text: `Exported on ${new Date().toLocaleString()}`,
-              size: 20
-            })
-          ],
-          spacing: { after: 400 }
-        })
-      ];
-      
-      realEntries.forEach(e => {
-        const title = e.t || e.title || 'Untitled';
-        const m = moodOf(e.mood);
-        
-        children.push(
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: `${ICONS[e.type] || '📄'} ${title}`,
-                size: 30,
-                bold: true
-              })
-            ],
-            spacing: { before: 350, after: 50 }
-          }),
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: `${e.type} · ${e.month}${m ? ' · felt ' + m.label : ''}${e.rating ? ' · ' + '★'.repeat(e.rating) : ''}`,
-                size: 18
-              })
-            ],
-            spacing: { after: 80 }
-          })
-        );
-        
-        if (e.note && e.note.length > 0) {
-          children.push(
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: e.note,
-                  size: 22,
-                  italics: true
-                })
-              ],
-              spacing: { after: 250 }
-            })
-          );
-        } else {
-          children.push(
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: "No thoughts written yet.",
-                  size: 20,
-                  italics: true,
-                  color: "999999"
-                })
-              ],
-              spacing: { after: 250 }
-            })
-          );
-        }
-      });
-
-      const doc = new Document({
-        sections: [{
-          properties: {},
-          children: children
-        }]
-      });
-
-      const blob = await Packer.toBlob(doc);
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `storyshelf-entries-${new Date().toISOString().slice(0,10)}.docx`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      showToast('📤 Entries exported as DOCX successfully!');
-    } catch (error) {
-      console.error('Export error:', error);
-      showToast('❌ Failed to export: ' + error.message);
-    }
-  });
-
-  // ============ ADD / EDIT MODAL ============
+    // ============ ADD / EDIT MODAL ============
   const entryModal = document.getElementById('entryModal');
   const moodPicker = document.getElementById('moodPicker');
   moodPicker.innerHTML = MOODS.map(m => `<div class="mood-opt" data-mood="${m.key}">${m.icon} ${m.label}</div>`).join('');
@@ -1494,21 +1356,21 @@
     },
     journal: {
       suggestions: [
-        "☕ Write about a memory that made you smile today",
-        "☕ What's something you're grateful for right now?",
-        "☕ Describe a person who has shaped who you are",
-        "☕ What does a perfect day look like to you?",
-        "☕ Write a letter to your future self"
+        " Write about a memory that made you smile today",
+        " What's something you're grateful for right now?",
+        " Describe a person who has shaped who you are",
+        " What does a perfect day look like to you?",
+        " Write a letter to your future self"
       ],
-      activity: "📝 Find a quiet space, grab your journal, and let your thoughts flow."
+      activity: "Find a quiet space, grab your journal, and let your thoughts flow."
     },
     random: {
       suggestions: [
-        "✨ Try a new hobby you've been curious about",
-        "✨ Visit a local bookstore and pick something on a whim",
-        "✨ Watch a documentary about something you know nothing about",
-        "✨ Create a playlist of songs that remind you of a specific time",
-        "✨ Write a short story based on a dream you remember"
+        " Try a new hobby you've been curious about",
+        " Visit a local bookstore and pick something on a whim",
+        " Watch a documentary about something you know nothing about",
+        " Create a playlist of songs that remind you of a specific time",
+        " Write a short story based on a dream you remember"
       ],
       activity: "🌟 Step out of your comfort zone and try something unexpected today."
     }
@@ -1555,16 +1417,16 @@
   const loadingNote = document.getElementById('loadingNote');
 
   const thoughtfulThreads = [
-    "You're drawn to stories that explore the complexity of human relationships—how we connect, drift apart, and find our way back to each other.",
+    "You're drawn to stories that explore the complexity of human relationships, how we connect, drift apart, and find our way back to each other.",
     "There's a quiet thread of hope running through your choices. Even in difficult moments, you seek out narratives that affirm resilience and the possibility of change.",
-    "You keep returning to stories about people who are searching for something—purpose, belonging, a version of themselves they haven't met yet.",
+    "You keep returning to stories about people who are searching for something, purpose, belonging, a version of themselves they haven't met yet.",
     "Across your entries, there's a recurring fascination with memory: how we remember, what we forget, and how the past shapes who we become.",
-    "You seem to gravitate toward moments of quiet transformation—where a single decision or encounter changes everything.",
+    "You seem to gravitate toward moments of quiet transformation where a single decision or encounter changes everything.",
     "There's a pattern in your choices: you're drawn to stories that ask big questions about identity, belonging, and what it means to live a meaningful life.",
     "You keep exploring the tension between staying and leaving, between safety and the unknown, in the stories you choose.",
     "Your selections often feature characters who are outsiders looking in, trying to find their place in the world.",
     "You're consistently drawn to narratives about finding light in unexpected places, even when the journey is dark.",
-    "There's a thread of longing in your choices—for connection, for understanding, for something just out of reach that you keep reaching for."
+    "There's a thread of longing in your choices, for connection, for understanding, for something just out of reach that you keep reaching for."
   ];
 
   function generatePatternInsight(entriesList) {
@@ -1624,12 +1486,12 @@
       threadText = threadText.replace(/^["']|["']$/g, '');
       
       const pattern = generatePatternInsight(entries);
-      const patternHtml = pattern ? `<div class="thread-pattern">🔍 ${pattern}</div>` : '';
+      const patternHtml = pattern ? `<div class="thread-pattern">${pattern}</div>` : '';
       
       resultBox.innerHTML = `
         <div class="thread-text">"${threadText}"</div>
         ${patternHtml}
-        <div class="margin-note">— noticed across ${nonWelcome.length} entries ✨</div>
+        <div class="margin-note">noticed across ${nonWelcome.length} entries ✨</div>
       `;
       resultBox.classList.add('show');
       
@@ -1639,7 +1501,7 @@
       const pattern = generatePatternInsight(entries);
       let patternHtml = '';
       if (pattern) {
-        patternHtml = `<div class="thread-pattern">🔍 ${pattern}</div>`;
+        patternHtml = `<div class="thread-pattern">${pattern}</div>`;
       } else {
         const typeCount = {};
         nonWelcome.forEach(e => {
@@ -1647,13 +1509,13 @@
         });
         const mostCommon = Object.keys(typeCount).sort((a,b) => typeCount[b] - typeCount[a])[0];
         const typeLabels = { book: 'books', film: 'films', music: 'music', journal: 'journal entries' };
-        patternHtml = `<div class="thread-pattern">🔍 You've logged ${nonWelcome.length} entries, with a focus on ${typeLabels[mostCommon] || mostCommon}.</div>`;
+        patternHtml = `<div class="thread-pattern">You've logged ${nonWelcome.length} entries, with a focus on ${typeLabels[mostCommon] || mostCommon}.</div>`;
       }
       
       resultBox.innerHTML = `
         <div class="thread-text">"${randomThread}"</div>
         ${patternHtml}
-        <div class="margin-note">— noticed across ${nonWelcome.length} entries ✨</div>
+        <div class="margin-note">noticed across ${nonWelcome.length} entries ✨</div>
       `;
       resultBox.classList.add('show');
     } finally {
