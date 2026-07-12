@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StoryShelf Café</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --lavender: #C6B6E2;
+    --lavender-deep: #9C82C4;
+    --plum: #5B3E63;
+    --plum-deep: #3D2A46;
+    --beige: #F3EADD;
+    --beige-warm: #EADFC8;
+    --pink: #E9BFD1;
+    --pink-deep: #D998B3;
+    --ink: #4A3B52;
+    --paper: #FBF6EE;
+    --shadow: rgba(91, 62, 99, 0.18);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(198,182,226,0.35), transparent 55%),
+      radial-gradient(ellipse at 85% 15%, rgba(233,191,209,0.3), transparent 50%),
+      var(--beige);
+    color:var(--ink);
+    font-family:'Lora', serif;
+    min-height:100vh;
+    padding: 32px 18px 100px;
+    overflow-x:hidden;
+  }
+
+  .wrap{ max-width: 920px; margin: 0 auto; }
+
+  header{ text-align:center; margin-bottom: 26px; position:relative; }
+  header .tape{
+    position:absolute; top:-14px; left:50%; transform:translateX(-50%) rotate(-3deg);
+    width:120px; height:34px; background: rgba(233,191,209,0.55);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  }
+  h1{
+    font-family:'Caveat', cursive; font-weight:700;
+    font-size: 3.6rem; color: var(--plum-deep); margin: 18px 0 4px; line-height:1;
+    text-shadow: 2px 2px 0 rgba(255,255,255,0.4);
+  }
+  header p.sub{
+    font-family:'Nunito', sans-serif; font-size:0.95rem; letter-spacing:0.04em;
+    color: var(--plum); opacity:0.75; margin:0;
+  }
+  header p.sub::before{ content:"☕ "; }
+  header p.sub::after{ content:" ☕"; }
+  .steam{
+    position:absolute; top:-2px; left:50%; margin-left:64px; font-size:1.1rem; opacity:0.5;
+    animation: rise 3s ease-in-out infinite;
+  }
+  @keyframes rise{
+    0%{ transform: translateY(0) scale(1); opacity:0.5; }
+    50%{ transform: translateY(-10px) scale(1.15); opacity:0.2; }
+    100%{ transform: translateY(-18px) scale(1.3); opacity:0; }
+  }
+
+  .stats-banner{
+    display:flex; gap:20px; justify-content:center; flex-wrap:wrap;
+    background: var(--paper); border-radius: 16px; padding: 14px 24px;
+    margin-bottom: 20px; box-shadow: 0 4px 12px var(--shadow);
+    font-family:'Nunito', sans-serif; font-size:0.8rem;
+  }
+  .stats-banner .stat{ display:flex; align-items:center; gap:6px; color:var(--plum); }
+  .stats-banner .stat strong{ font-weight:700; color:var(--plum-deep); }
+
+  .nav-tabs{ display:flex; gap:10px; justify-content:center; margin: 24px 0 30px; flex-wrap:wrap; }
+  .nav-tab{
+    font-family:'Caveat', cursive; font-weight:700; font-size:1.15rem;
+    padding: 8px 22px; border-radius: 20px; cursor:pointer; user-select:none;
+    background: var(--paper); border: 2px solid transparent; color: var(--plum);
+    box-shadow: 0 2px 5px var(--shadow); transition: all .25s ease;
+  }
+  .nav-tab.active{ background: var(--plum-deep); color: var(--paper); transform: translateY(-2px) rotate(-1deg); }
+  .nav-tab:hover{ transform: translateY(-2px); }
+
+  .view{ display:none; }
+  .view.active{ display:block; animation: fadeIn .4s ease; }
+
+  .season-strip{ display:flex; gap:10px; justify-content:center; margin: 0 0 26px; flex-wrap:wrap; }
+  .season-chip{
+    font-family:'Nunito', sans-serif; font-weight:700; font-size:0.78rem;
+    padding: 7px 16px; border-radius: 20px; cursor:pointer; user-select:none;
+    background: var(--paper); border: 2px solid transparent;
+    color: var(--plum); transition: all .25s ease;
+    box-shadow: 0 2px 5px var(--shadow);
+  }
+  .season-chip.active{ background: var(--lavender); border-color: var(--lavender-deep); color: var(--plum-deep); transform: translateY(-2px) rotate(-1deg); }
+  .season-chip:hover{ transform: translateY(-2px); }
+
+  .shelf-scene{
+    position:relative;
+    background: var(--paper);
+    border-radius: 18px;
+    padding: 34px 28px 34px;
+    box-shadow: 0 12px 30px var(--shadow), inset 0 0 0 1px rgba(255,255,255,0.5);
+    margin-bottom: 28px;
+    transform: rotate(-0.3deg);
+    min-height: 160px;
+  }
+  .shelf-scene::before{
+    content:"today's counter";
+    position:absolute; top:-14px; left:26px;
+    background: var(--pink); color: var(--plum-deep);
+    font-family:'Caveat', cursive; font-weight:700; font-size:1.3rem;
+    padding: 3px 16px; border-radius: 10px; transform: rotate(-2deg);
+    box-shadow: 0 3px 6px var(--shadow);
+  }
+
+  .plank{
+    position:relative;
+    display:flex; align-items:flex-end; gap: 16px;
+    padding: 18px 6px 10px;
+    flex-wrap: wrap;
+    min-height: 84px;
+  }
+  .empty-note{
+    font-family:'Nunito', sans-serif; font-size:0.85rem; color:var(--plum); opacity:0.6; padding: 24px 4px;
+    text-align:center; width:100%; font-style:italic;
+  }
+
+  .item{
+    position:relative;
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    cursor:pointer;
+    transition: transform .2s ease;
+  }
+  .item:hover{ transform: translateY(-6px) rotate(-2deg); }
+  .item .icon{
+    width:58px; height:58px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.6rem; box-shadow: 2px 4px 10px var(--shadow), inset -3px 0 0 rgba(0,0,0,0.08);
+    position:relative;
+  }
+  .item .icon .mood-badge{
+    position:absolute; bottom:-4px; right:-4px; font-size:0.9rem;
+    background:var(--paper); border-radius:50%; width:20px; height:20px;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 1px 4px rgba(0,0,0,0.15);
+  }
+  .item .cap{
+    font-family:'Nunito', sans-serif; font-size:0.62rem; text-align:center; max-width:76px;
+    color: var(--plum); opacity:0.85; line-height:1.15; font-weight:700;
+  }
+  .item.book .icon{ background: var(--lavender); }
+  .item.film .icon{ background: var(--pink); }
+  .item.music .icon{ background: var(--beige-warm); }
+  .item.journal .icon{ background: #E4CBA8; }
+
+  .cat{ position:absolute; bottom:6px; right:24px; font-size:1.6rem; animation: wander 9s ease-in-out infinite; }
+  @keyframes wander{
+    0%,100%{ transform: translateX(0) scaleX(1); }
+    45%{ transform: translateX(-140px) scaleX(-1); }
+    55%{ transform: translateX(-140px) scaleX(-1); }
+  }
+
+  .add-row{ display:flex; justify-content:center; margin-bottom: 40px; }
+  .add-btn{
+    font-family:'Caveat', cursive; font-weight:700; font-size:1.25rem;
+    background: var(--pink-deep); color: var(--paper); border:none;
+    padding: 12px 30px; border-radius: 30px; cursor:pointer;
+    box-shadow: 0 6px 14px var(--shadow); transition: transform .2s ease;
+  }
+  .add-btn:hover{ transform: translateY(-2px) rotate(-1deg); }
+
+  .fab{
+    position:fixed; bottom:28px; right:28px;
+    width:60px; height:60px; border-radius:50%;
+    background: var(--plum-deep); color: white;
+    font-size:2.2rem; border:none; cursor:pointer;
+    box-shadow: 0 8px 24px rgba(91,62,99,0.4);
+    z-index:40; transition: transform .2s ease, box-shadow .2s ease;
+    font-family:'Nunito', sans-serif;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .fab:hover{ transform: scale(1.08) rotate(-4deg); box-shadow: 0 12px 32px rgba(91,62,99,0.5); }
+  .fab .shortcut-hint{
+    position:absolute; bottom:-22px; font-size:0.55rem;
+    opacity:0.5; font-family:'Nunito',sans-serif; background:var(--paper);
+    padding:2px 8px; border-radius:6px; color:var(--plum); white-space:nowrap;
+  }
+
+  .toolbar{
+    display:flex; gap:10px; justify-content:flex-end; margin-bottom:16px; flex-wrap:wrap;
+  }
+  .toolbar-btn{
+    font-family:'Nunito', sans-serif; font-size:0.7rem; font-weight:700;
+    background: var(--paper); border: 1.5px solid var(--beige-warm); border-radius:12px;
+    padding: 6px 14px; cursor:pointer; color:var(--plum); transition: all .2s ease;
+  }
+  .toolbar-btn:hover{ background: var(--lavender); border-color:var(--lavender-deep); transform:translateY(-1px); }
+
+  .search-box{
+    width:100%; padding: 10px 16px; border-radius: 12px;
+    border: 1.5px solid var(--beige-warm); font-family:'Lora', serif;
+    margin-bottom: 18px; background: var(--paper); font-size:0.9rem;
+    color: var(--ink); transition: border-color .2s ease;
+  }
+  .search-box:focus{ outline:none; border-color:var(--lavender-deep); }
+
+  .modal-backdrop{
+    display:none; position:fixed; inset:0; background: rgba(61,42,70,0.45);
+    z-index:50; align-items:center; justify-content:center; padding: 20px;
+  }
+  .modal-backdrop.show{ display:flex; }
+  .modal{
+    background: var(--paper); border-radius: 16px; padding: 28px; max-width: 460px; width:100%;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3); max-height: 88vh; overflow-y:auto;
+    position:relative;
+  }
+  .modal h2{ font-family:'Caveat', cursive; font-size:1.9rem; color:var(--plum-deep); margin:0 0 14px; }
+  .modal-close{
+    position:absolute; top:16px; right:18px; background:none; border:none; font-size:1.3rem;
+    color:var(--plum); cursor:pointer; opacity:0.6;
+  }
+  .modal-close:hover{ opacity:1; }
+  .field{ margin-bottom: 14px; }
+  .field label{ display:block; font-family:'Nunito',sans-serif; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--plum); opacity:0.7; margin-bottom:5px; }
+  .field input[type=text], .field select, .field textarea{
+    width:100%; font-family:'Lora', serif; font-size:0.95rem; padding: 9px 12px;
+    border-radius: 8px; border: 1.5px solid var(--beige-warm); background: #fff;
+    color: var(--ink);
+  }
+  .field textarea{ min-height: 100px; resize:vertical; font-style:italic; }
+  .char-counter{ text-align:right; font-family:'Nunito',sans-serif; font-size:0.65rem; color:var(--plum); opacity:0.5; margin-top:4px; }
+  .type-picker, .mood-picker{ display:flex; gap:8px; flex-wrap:wrap; }
+  .type-opt, .mood-opt{
+    font-family:'Nunito',sans-serif; font-size:0.78rem; font-weight:700; padding:7px 14px;
+    border-radius:16px; background:var(--beige-warm); color:var(--plum); cursor:pointer; border:2px solid transparent;
+  }
+  .type-opt.selected{ background:var(--lavender); border-color:var(--lavender-deep); color:var(--plum-deep); }
+  .mood-opt.selected{ background:var(--pink); border-color:var(--pink-deep); color:var(--plum-deep); }
+  .rating-picker{ display:flex; gap:4px; font-size:1.3rem; }
+  .star{ cursor:pointer; opacity:0.35; }
+  .star.on{ opacity:1; }
+  .modal-submit{
+    width:100%; font-family:'Caveat', cursive; font-weight:700; font-size:1.2rem;
+    background: var(--plum-deep); color: var(--paper); border:none; padding: 11px; border-radius: 24px;
+    cursor:pointer; margin-top: 6px;
+  }
+  .modal-submit:hover{ background: var(--plum); }
+
+  .detail-modal .icon-big{ font-size:2.2rem; }
+  .detail-modal .meta{ font-family:'Nunito',sans-serif; font-size:0.72rem; color:var(--plum); opacity:0.65; margin: 2px 0 4px; }
+  .detail-modal .mood-line{ font-family:'Nunito',sans-serif; font-size:0.8rem; color:var(--plum); opacity:0.8; margin-bottom:12px; }
+  .detail-modal .thoughts{ font-style:italic; line-height:1.7; }
+  .detail-modal .rating-display{ margin-top:10px; font-size:1.1rem; }
+  .detail-actions{ display:flex; gap:14px; margin-top:18px; align-items:center; flex-wrap:wrap; }
+  .edit-link, .delete-link{
+    font-family:'Nunito',sans-serif; font-size:0.75rem; background:none; border:none; cursor:pointer;
+    text-decoration:underline; opacity:0.75;
+  }
+  .edit-link{ color:var(--lavender-deep); }
+  .delete-link{ color:var(--pink-deep); }
+  .edit-link:hover, .delete-link:hover{ opacity:1; }
+
+  .section-title{
+    font-family:'Caveat', cursive; font-weight:700; font-size: 2rem;
+    color: var(--plum-deep); margin: 10px 0 6px; display:flex; align-items:center; gap:10px;
+  }
+  .section-title .stem{ font-family:'Nunito',sans-serif; font-size:0.7rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color: var(--lavender-deep); background: rgba(255,255,255,0.5); padding:3px 10px; border-radius:8px; }
+  .section-sub{ font-family:'Nunito', sans-serif; font-size:0.85rem; color:var(--plum); opacity:0.75; margin-bottom:18px; max-width: 560px; }
+
+  .thread-panel{
+    background: var(--paper); border-radius: 16px; padding: 26px;
+    box-shadow: 0 10px 24px var(--shadow); margin-bottom: 36px; position:relative;
+  }
+  .thread-panel::after{ content:"☕"; position:absolute; top:14px; right:20px; font-size:1.3rem; opacity:0.4; }
+  .thread-btn{
+    font-family:'Caveat', cursive; font-weight:700; font-size:1.15rem;
+    background: var(--plum-deep); color: var(--paper); border:none;
+    padding: 12px 26px; border-radius: 30px; cursor:pointer;
+    box-shadow: 0 6px 14px var(--shadow); transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .thread-btn:hover{ transform: translateY(-2px) rotate(-1deg); box-shadow: 0 9px 18px var(--shadow); }
+  .thread-btn:disabled{ opacity:0.6; cursor:wait; }
+  .thread-result{
+    margin-top: 20px; padding: 18px 20px; border-left: 3px dashed var(--lavender-deep);
+    font-family:'Lora', serif; font-style:italic; font-size:1.02rem; line-height:1.6;
+    color: var(--plum-deep); display:none; background: linear-gradient(90deg, rgba(198,182,226,0.12), transparent);
+    border-radius: 4px;
+  }
+  .thread-result.show{ display:block; animation: fadeIn .6s ease; }
+  .thread-result .margin-note{
+    display:block; font-family:'Nunito', sans-serif; font-style:normal; font-size:0.68rem;
+    color: var(--lavender-deep); margin-top:10px; letter-spacing:0.03em;
+  }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+  .loading-note{ font-family:'Nunito',sans-serif; font-size:0.8rem; color:var(--plum); opacity:0.7; margin-top:14px; display:none; }
+  .loading-note.show{ display:block; }
+
+  .ghost-shelf{
+    background: repeating-linear-gradient(135deg, var(--beige-warm), var(--beige-warm) 10px, var(--beige) 10px, var(--beige) 20px);
+    border-radius: 16px; padding: 24px 26px; box-shadow: 0 10px 24px var(--shadow);
+  }
+  .ghost-card{
+    background: var(--paper); border-radius: 10px; padding:16px 18px;
+    display:flex; gap:14px; align-items:flex-start; box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    margin-bottom:10px; cursor:pointer;
+  }
+  .ghost-card:last-child{ margin-bottom:0; }
+  .ghost-card .icon{ font-size:1.8rem; }
+  .ghost-card b{ font-family:'Caveat', cursive; font-size:1.3rem; color:var(--plum-deep); display:block; }
+  .ghost-card p{ font-family:'Nunito', sans-serif; font-size:0.82rem; margin:6px 0 0; color:var(--plum); line-height:1.5; }
+  .ghost-card .old-rating{ font-family:'Nunito',sans-serif; font-size:0.68rem; color:var(--pink-deep); text-decoration: line-through; opacity:0.7; }
+  .ghost-empty{ font-family:'Nunito',sans-serif; font-size:0.8rem; color:var(--plum); opacity:0.6; font-style:italic; text-align:center; padding:10px; }
+
+  .year-title{ text-align:center; margin-bottom: 30px; }
+  .year-title h2{ font-family:'Caveat', cursive; font-size:2.6rem; color:var(--plum-deep); margin:0; }
+  .year-title p{ font-family:'Nunito',sans-serif; font-size:0.85rem; color:var(--plum); opacity:0.7; }
+
+  .season-block{
+    background: var(--paper); border-radius: 16px; padding: 22px 24px; margin-bottom: 24px;
+    box-shadow: 0 8px 20px var(--shadow); position:relative;
+  }
+  .season-block.winter{ border-top: 5px solid var(--lavender-deep); }
+  .season-block.spring{ border-top: 5px solid var(--pink-deep); }
+  .season-block.summer{ border-top: 5px solid #D8B25C; }
+  .season-block.autumn{ border-top: 5px solid #B5714A; }
+  .season-block h3{ font-family:'Caveat', cursive; font-size:1.7rem; color:var(--plum-deep); margin:0 0 14px; }
+
+  .month-row{ display:flex; gap: 18px; flex-wrap:wrap; margin-bottom: 10px; }
+  .month-col{ min-width: 150px; flex:1; }
+  .month-col h4{ font-family:'Nunito',sans-serif; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--plum); opacity:0.55; margin: 0 0 8px; }
+  .month-entry{ font-family:'Nunito',sans-serif; font-size:0.78rem; color:var(--plum); padding: 5px 0; cursor:pointer; display:flex; align-items:center; gap:6px; }
+  .month-entry:hover{ color:var(--plum-deep); text-decoration:underline; }
+  .month-empty{ font-family:'Nunito',sans-serif; font-size:0.72rem; color:var(--plum); opacity:0.4; font-style:italic; }
+
+  .blog-title{ text-align:center; margin-bottom: 30px; }
+  .blog-title h2{ font-family:'Caveat', cursive; font-size:2.6rem; color:var(--plum-deep); margin:0; }
+  .blog-title p{ font-family:'Nunito',sans-serif; font-size:0.85rem; color:var(--plum); opacity:0.7; }
+  .blog-post{
+    background: var(--paper); border-radius: 16px; padding: 24px 26px; margin-bottom: 20px;
+    box-shadow: 0 8px 20px var(--shadow); cursor:pointer; transition: transform .2s ease, opacity .2s ease;
+  }
+  .blog-post:hover{ transform: translateY(-3px); }
+  .blog-post-head{ display:flex; align-items:center; gap:12px; margin-bottom:8px; }
+  .blog-post-head .icon{ font-size:1.6rem; }
+  .blog-post-head h3{ font-family:'Caveat', cursive; font-size:1.6rem; color:var(--plum-deep); margin:0; flex:1; }
+  .blog-post-meta{ font-family:'Nunito',sans-serif; font-size:0.7rem; color:var(--plum); opacity:0.6; }
+  .blog-post-body{ font-style:italic; line-height:1.7; color:var(--ink); margin-top:8px; }
+  .blog-empty{ text-align:center; font-family:'Nunito',sans-serif; font-size:0.9rem; color:var(--plum); opacity:0.6; font-style:italic; padding: 40px 0; }
+
+  .month-summary{
+    background: var(--paper); border-radius: 16px; padding: 20px 24px;
+    margin-bottom: 24px; box-shadow: 0 8px 20px var(--shadow);
+  }
+  .month-summary h3{ font-family:'Caveat', cursive; font-size:1.8rem; color:var(--plum-deep); margin:0 0 8px; }
+  .month-summary .summary-grid{ display:flex; gap:16px; flex-wrap:wrap; margin-top:10px; }
+  .month-summary .summary-item{ font-family:'Nunito',sans-serif; font-size:0.78rem; color:var(--plum); background:var(--beige); padding:4px 12px; border-radius:12px; }
+
+  footer{ text-align:center; margin-top:50px; font-family:'Nunito',sans-serif; font-size:0.72rem; color:var(--plum); opacity:0.55; }
+
+  /* Toast notification */
+  .toast{
+    position:fixed; bottom:100px; left:50%; transform:translateX(-50%);
+    background:var(--plum-deep); color:var(--paper); padding:12px 24px;
+    border-radius:12px; font-family:'Nunito',sans-serif; font-size:0.85rem;
+    box-shadow:0 8px 24px rgba(0,0,0,0.3); z-index:100;
+    opacity:0; transition: opacity .3s ease, transform .3s ease;
+    pointer-events:none;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(-10px); }
+
+  @media (max-width:600px){
+    h1{ font-size: 2.6rem; }
+    .month-row{ flex-direction:column; }
+    .stats-banner{ gap:12px; font-size:0.7rem; }
+    .fab{ width:52px; height:52px; font-size:1.8rem; bottom:20px; right:20px; }
+    .fab .shortcut-hint{ display:none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="tape"></div>
+    <h1>StoryShelf Café</h1>
+    <span class="steam">˚</span>
+    <p class="sub">a living café where your life becomes a story</p>
+  </header>
+
+  <div class="stats-banner" id="statsBanner">
+    <span class="stat">📚 <strong id="statEntries">0</strong> entries</span>
+    <span class="stat">✍️ <strong id="statWords">0</strong> words</span>
+    <span class="stat">💭 <strong id="statMoods">0</strong> moods felt</span>
+    <span class="stat">📖 <strong id="statThisMonth">0</strong> this month</span>
+  </div>
+
+  <div class="nav-tabs">
+    <div class="nav-tab active" data-view="shelf">the café</div>
+    <div class="nav-tab" data-view="blog">the blog</div>
+    <div class="nav-tab" data-view="year">your year</div>
+  </div>
+
+  <!-- ===================== CAFÉ / SHELF VIEW ===================== -->
+  <div class="view active" id="view-shelf">
+
+    <div class="season-strip">
+      <div class="season-chip active" data-season="all">the whole year</div>
+      <div class="season-chip" data-season="winter">winter</div>
+      <div class="season-chip" data-season="spring">spring</div>
+      <div class="season-chip" data-season="summer">summer</div>
+      <div class="season-chip" data-season="autumn">autumn</div>
+    </div>
+
+    <div class="shelf-scene">
+      <div class="plank" id="plank-1"></div>
+      <div class="cat">🐈‍⬛</div>
+    </div>
+
+    <div class="add-row">
+      <button class="add-btn" id="openAddBtn">✎ log something new</button>
+    </div>
+
+    <section>
+      <div class="section-title">Memory Threads <span class="stem">unnoticed, until now</span></div>
+      <p class="section-sub">The quiet ideas you keep returning to, across books, films, and late-night journal pages — surfaced from what you've logged.</p>
+      <div class="thread-panel">
+        <button class="thread-btn" id="findThreadBtn">✦ find a thread through my café</button>
+        <div class="loading-note" id="loadingNote">reading between the cups...</div>
+        <div class="thread-result" id="threadResult"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">The Shelf That Doesn't Exist</div>
+      <p class="section-sub">Things you weren't ready for — quietly waiting for the version of you that is. Rate something 1-2★ and it'll wait here until you revisit it.</p>
+      <div class="ghost-shelf" id="ghostShelf"></div>
+    </section>
+  </div>
+
+  <!-- ===================== BLOG VIEW ===================== -->
+  <div class="view" id="view-blog">
+    <div class="blog-title">
+      <h2>your pages</h2>
+      <p>every reflection, in the order you wrote them</p>
+    </div>
+    <div class="toolbar">
+      <button class="toolbar-btn" id="exportBtn">📤 export all</button>
+      <button class="toolbar-btn" id="importBtn">📥 import</button>
+      <input type="file" id="importFile" accept=".json" style="display:none">
+    </div>
+    <input class="search-box" id="blogSearch" placeholder="🔍 search through your pages...">
+    <div id="blogContent"></div>
+  </div>
+
+  <!-- ===================== YEAR VIEW ===================== -->
+  <div class="view" id="view-year">
+    <div class="year-title">
+      <h2>2026, in four seasons</h2>
+      <p>every month, walked through like a room</p>
+    </div>
+    <div class="month-summary" id="monthSummary">
+      <h3 id="monthSummaryTitle">this month</h3>
+      <div class="summary-grid" id="monthSummaryGrid"></div>
+    </div>
+    <div id="yearContent"></div>
+  </div>
+
+  <footer>every book, film, cup, and quiet thought — one continuous story, not four separate apps</footer>
+</div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
+<!-- ===================== FAB ===================== -->
+<button class="fab" id="fabBtn">
+  +
+  <span class="shortcut-hint">⌘K</span>
+</button>
+
+<!-- ===================== ADD / EDIT MODAL ===================== -->
+<div class="modal-backdrop" id="entryModal">
+  <div class="modal">
+    <button class="modal-close" id="closeEntryBtn">✕</button>
+    <h2 id="entryModalTitle">What are you adding to the café?</h2>
+    <div class="field">
+      <label>Type</label>
+      <div class="type-picker" id="typePicker">
+        <div class="type-opt selected" data-type="book">📗 book</div>
+        <div class="type-opt" data-type="film">🎞️ film</div>
+        <div class="type-opt" data-type="music">🎵 music</div>
+        <div class="type-opt" data-type="journal">☕ journal</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Title</label>
+      <input type="text" id="titleInput" placeholder="e.g. Norwegian Wood">
+    </div>
+    <div class="field">
+      <label>Month</label>
+      <select id="monthInput">
+        <option>Jan</option><option>Feb</option><option>Mar</option><option>Apr</option>
+        <option>May</option><option>Jun</option><option>Jul</option><option>Aug</option>
+        <option>Sep</option><option>Oct</option><option>Nov</option><option>Dec</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Mood</label>
+      <div class="mood-picker" id="moodPicker"></div>
+    </div>
+    <div class="field">
+      <label>Your thoughts</label>
+      <textarea id="thoughtsInput" placeholder="What did it stir up? What were you carrying while you read/watched/listened to it?" maxlength="500"></textarea>
+      <div class="char-counter" id="charCounter">500 characters remaining</div>
+    </div>
+    <div class="field">
+      <label>Rating (optional)</label>
+      <div class="rating-picker" id="ratingPicker">
+        <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span>
+        <span class="star" data-val="3">★</span><span class="star" data-val="4">★</span>
+        <span class="star" data-val="5">★</span>
+      </div>
+    </div>
+    <button class="modal-submit" id="submitEntryBtn">add to the shelf</button>
+  </div>
+</div>
+
+<!-- ===================== ENTRY DETAIL MODAL ===================== -->
+<div class="modal-backdrop" id="detailModal">
+  <div class="modal detail-modal">
+    <button class="modal-close" id="closeDetailBtn">✕</button>
+    <div class="icon-big" id="detailIcon"></div>
+    <h2 id="detailTitle"></h2>
+    <div class="meta" id="detailMeta"></div>
+    <div class="mood-line" id="detailMood"></div>
+    <div class="thoughts" id="detailThoughts"></div>
+    <div class="rating-display" id="detailRating"></div>
+    <div class="detail-actions">
+      <button class="edit-link" id="editEntryBtn">✎ edit this entry</button>
+      <button class="delete-link" id="deleteEntryBtn">✕ remove this entry</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const SEASON_OF_MONTH = {
+    Dec:'winter', Jan:'winter', Feb:'winter',
+    Mar:'spring', Apr:'spring', May:'spring',
+    Jun:'summer', Jul:'summer', Aug:'summer',
+    Sep:'autumn', Oct:'autumn', Nov:'autumn'
+  };
+  const ICONS = { book:"📗", film:"🎞️", music:"🎵", journal:"☕" };
+  const MOODS = [
+    {key:'quiet', icon:'🌙', label:'quiet'},
+    {key:'bright', icon:'☀️', label:'bright'},
+    {key:'heavy', icon:'🌧️', label:'heavy'},
+    {key:'nostalgic', icon:'🍂', label:'nostalgic'},
+    {key:'hopeful', icon:'✨', label:'hopeful'},
+    {key:'restless', icon:'🔥', label:'restless'}
+  ];
+  const STORAGE_KEY = "storyshelf-entries";
+
+  let entries = [];
+
+  // ---------- Storage: localStorage for local testing & Vercel ----------
+  async function loadEntries(){
+    try{
+      const stored = localStorage.getItem(STORAGE_KEY);
+      entries = stored ? JSON.parse(stored) : [];
+    }catch(e){
+      entries = [];
+    }
+  }
+
+  async function saveEntries(){
+    try{ 
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); 
+    } catch(e){ 
+      console.error("could not save entries", e); 
+    }
+  }
+
+  function moodOf(key){ return MOODS.find(m => m.key === key); }
+
+  // ---------- Toast notification ----------
+  function showToast(message, duration = 2500){
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(toast._timeout);
+    toast._timeout = setTimeout(() => toast.classList.remove('show'), duration);
+  }
+
+  // ---------- Stats ----------
+  function updateStats(){
+    const total = entries.length;
+    const words = entries.reduce((sum, e) => sum + (e.note || '').split(/\s+/).filter(w=>w).length, 0);
+    const moods = entries.filter(e => e.mood).length;
+    const currentMonth = new Date().toLocaleString('default', { month: 'short' });
+    const thisMonth = entries.filter(e => e.month === currentMonth).length;
+    document.getElementById('statEntries').textContent = total;
+    document.getElementById('statWords').textContent = words;
+    document.getElementById('statMoods').textContent = moods;
+    document.getElementById('statThisMonth').textContent = thisMonth;
+  }
+
+  // ---------- Monthly summary ----------
+  function renderMonthSummary(){
+    const currentMonth = new Date().toLocaleString('default', { month: 'short' });
+    const monthEntries = entries.filter(e => e.month === currentMonth);
+    const title = document.getElementById('monthSummaryTitle');
+    const grid = document.getElementById('monthSummaryGrid');
+    const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const monthIndex = monthNames.indexOf(currentMonth);
+    const nextMonth = monthIndex < 11 ? monthNames[monthIndex + 1] : 'Jan';
+    const lastMonth = monthIndex > 0 ? monthNames[monthIndex - 1] : 'Dec';
+    const count = monthEntries.length;
+    const types = monthEntries.reduce((acc, e) => { acc[e.type] = (acc[e.type] || 0) + 1; return acc; }, {});
+    const typeStr = Object.entries(types).map(([k,v]) => `${ICONS[k]} ${v}`).join(' ');
+    const topMood = monthEntries.filter(e => e.mood).reduce((acc, e) => { acc[e.mood] = (acc[e.mood] || 0) + 1; return acc; }, {});
+    const topMoodKey = Object.keys(topMood).sort((a,b) => topMood[b] - topMood[a])[0];
+    const moodIcon = topMoodKey ? MOODS.find(m => m.key === topMoodKey)?.icon || '' : '';
+
+    title.textContent = `${currentMonth} in review`;
+    grid.innerHTML = `
+      <span class="summary-item">📊 ${count} entries</span>
+      ${typeStr ? `<span class="summary-item">${typeStr}</span>` : ''}
+      ${moodIcon ? `<span class="summary-item">${moodIcon} felt often</span>` : ''}
+      <span class="summary-item">📅 ${lastMonth} → ${nextMonth}</span>
+    `;
+  }
+
+  // ---------- Nav ----------
+  document.querySelectorAll('.nav-tab').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+      document.getElementById('view-'+tab.dataset.view).classList.add('active');
+      if(tab.dataset.view === 'year') { renderYear(); renderMonthSummary(); }
+      if(tab.dataset.view === 'blog') renderBlog();
+    });
+  });
+
+  // ---------- Shelf rendering ----------
+  const plank1 = document.getElementById('plank-1');
+
+  function renderShelf(season){
+    plank1.innerHTML = '';
+    const filtered = season === 'all' ? entries : entries.filter(e => SEASON_OF_MONTH[e.month] === season);
+    if(filtered.length === 0){
+      plank1.innerHTML = `<div class="empty-note">the counter is empty — log the first thing you're reading, watching, or listening to. ☕</div>`;
+      return;
+    }
+    filtered.forEach((e) => {
+      const m = moodOf(e.mood);
+      const el = document.createElement('div');
+      el.className = `item ${e.type}`;
+      el.innerHTML = `<div class="icon">${ICONS[e.type]}${m ? `<span class="mood-badge">${m.icon}</span>` : ''}</div><div class="cap">${e.t}</div>`;
+      el.addEventListener('click', ()=> openDetail(e.id));
+      plank1.appendChild(el);
+    });
+  }
+
+  document.querySelectorAll('.season-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.season-chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      renderShelf(chip.dataset.season);
+    });
+  });
+
+  // ---------- Dynamic ghost shelf ----------
+  function renderGhostShelf(){
+    const ghosts = entries.filter(e => e.rating && e.rating <= 2);
+    const el = document.getElementById('ghostShelf');
+    if(ghosts.length === 0){
+      el.innerHTML = `<div class="ghost-empty">nothing waiting here yet — anything you rate 1-2★ will quietly collect on this shelf.</div>`;
+      return;
+    }
+    el.innerHTML = ghosts.map(g => {
+      const m = moodOf(g.mood);
+      return `
+      <div class="ghost-card" data-id="${g.id}">
+        <div class="icon">${ICONS[g.type]}</div>
+        <div>
+          <b>${g.t}</b>
+          <span class="old-rating">rated ${'★'.repeat(g.rating)} · ${g.month}${m ? ' · felt ' + m.label : ''}</span>
+          <p>${g.note}</p>
+        </div>
+      </div>`;
+    }).join('');
+    el.querySelectorAll('.ghost-card').forEach(card=>{
+      card.addEventListener('click', ()=> openDetail(card.dataset.id));
+    });
+  }
+
+  // ---------- Year view ----------
+  function renderYear(){
+    const seasons = [
+      {key:'winter', label:'Winter', months:['Dec','Jan','Feb']},
+      {key:'spring', label:'Spring', months:['Mar','Apr','May']},
+      {key:'summer', label:'Summer', months:['Jun','Jul','Aug']},
+      {key:'autumn', label:'Autumn', months:['Sep','Oct','Nov']},
+    ];
+    const container = document.getElementById('yearContent');
+    container.innerHTML = '';
+    seasons.forEach(s => {
+      const block = document.createElement('div');
+      block.className = `season-block ${s.key}`;
+      let monthsHtml = '';
+      s.months.forEach(m => {
+        const monthEntries = entries.filter(e => e.month === m);
+        let itemsHtml = monthEntries.length
+          ? monthEntries.map(e => `<div class="month-entry" data-id="${e.id}">${ICONS[e.type]} ${e.t}</div>`).join('')
+          : `<div class="month-empty">quiet month</div>`;
+        monthsHtml += `<div class="month-col"><h4>${m}</h4>${itemsHtml}</div>`;
+      });
+      block.innerHTML = `<h3>${s.label}</h3><div class="month-row">${monthsHtml}</div>`;
+      container.appendChild(block);
+    });
+    container.querySelectorAll('.month-entry').forEach(el=>{
+      el.addEventListener('click', ()=> openDetail(el.dataset.id));
+    });
+  }
+
+  // ---------- Blog view with search ----------
+  function renderBlog(query = ''){
+    const container = document.getElementById('blogContent');
+    if(entries.length === 0){
+      container.innerHTML = `<div class="blog-empty">no pages written yet — log something in the café and your reflections will show up here.</div>`;
+      return;
+    }
+    const sorted = [...entries].sort((a,b)=> String(b.id).localeCompare(String(a.id)));
+    const filtered = query ? sorted.filter(e => 
+      e.t.toLowerCase().includes(query) || 
+      e.note.toLowerCase().includes(query)
+    ) : sorted;
+    if(filtered.length === 0){
+      container.innerHTML = `<div class="blog-empty">no pages match your search.</div>`;
+      return;
+    }
+    container.innerHTML = filtered.map(e => {
+      const m = moodOf(e.mood);
+      return `
+      <div class="blog-post" data-id="${e.id}">
+        <div class="blog-post-head">
+          <div class="icon">${ICONS[e.type]}</div>
+          <h3>${e.t}</h3>
+        </div>
+        <div class="blog-post-meta">${e.type} · ${e.month}${m ? ' · felt ' + m.icon + ' ' + m.label : ''}${e.rating ? ' · ' + '★'.repeat(e.rating) : ''}</div>
+        <div class="blog-post-body">${e.note}</div>
+      </div>`;
+    }).join('');
+    container.querySelectorAll('.blog-post').forEach(post=>{
+      post.addEventListener('click', ()=> openDetail(post.dataset.id));
+    });
+  }
+
+  // ---------- Search handler ----------
+  document.getElementById('blogSearch').addEventListener('input', (e) => {
+    renderBlog(e.target.value.toLowerCase().trim());
+  });
+
+  // ---------- Export / Import ----------
+  document.getElementById('exportBtn').addEventListener('click', () => {
+    const dataStr = JSON.stringify(entries, null, 2);
+    const blob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `storyshelf-backup-${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('📤 Entries exported successfully!');
+  });
+
+  document.getElementById('importBtn').addEventListener('click', () => {
+    document.getElementById('importFile').click();
+  });
+
+  document.getElementById('importFile').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+    try {
+      const text = await file.text();
+      const imported = JSON.parse(text);
+      if(Array.isArray(imported) && imported.length > 0) {
+        if(confirm(`This will replace all current entries (${entries.length}) with ${imported.length} imported entries. Continue?`)) {
+          entries = imported;
+          await saveEntries();
+          refreshAll();
+          showToast(`📥 Imported ${imported.length} entries successfully!`);
+        }
+      } else {
+        alert('No valid entries found in this file.');
+      }
+    } catch(err) {
+      alert('Could not read this file. Make sure it\'s a valid StoryShelf export.');
+    }
+    e.target.value = '';
+  });
+
+  // ---------- Add / Edit modal ----------
+  const entryModal = document.getElementById('entryModal');
+  const moodPicker = document.getElementById('moodPicker');
+  let selectedType = 'book';
+  let selectedMood = null;
+  let selectedRating = 0;
+  let editingId = null;
+
+  moodPicker.innerHTML = MOODS.map(m => `<div class="mood-opt" data-mood="${m.key}">${m.icon} ${m.label}</div>`).join('');
+
+  const thoughtsInput = document.getElementById('thoughtsInput');
+  const charCounter = document.getElementById('charCounter');
+  thoughtsInput.addEventListener('input', () => {
+    const remaining = 500 - thoughtsInput.value.length;
+    charCounter.textContent = remaining >= 0 ? `${remaining} characters remaining` : 'thoughts are long...';
+    charCounter.style.color = remaining < 0 ? 'var(--pink-deep)' : 'var(--plum)';
+  });
+
+  function resetEntryForm(){
+    selectedType = 'book'; selectedMood = null; selectedRating = 0; editingId = null;
+    document.querySelectorAll('.type-opt').forEach(o=>o.classList.toggle('selected', o.dataset.type === 'book'));
+    moodPicker.querySelectorAll('.mood-opt').forEach(o=>o.classList.remove('selected'));
+    document.getElementById('ratingPicker').querySelectorAll('.star').forEach(s=>s.classList.remove('on'));
+    document.getElementById('titleInput').value = '';
+    document.getElementById('monthInput').selectedIndex = 0;
+    document.getElementById('thoughtsInput').value = '';
+    charCounter.textContent = '500 characters remaining';
+    charCounter.style.color = 'var(--plum)';
+  }
+
+  function openEntryModal(mode, entry){
+    if(mode === 'edit' && entry){
+      editingId = entry.id;
+      selectedType = entry.type; selectedMood = entry.mood || null; selectedRating = entry.rating || 0;
+      document.getElementById('entryModalTitle').textContent = 'Edit this page';
+      document.getElementById('submitEntryBtn').textContent = 'save changes';
+      document.querySelectorAll('.type-opt').forEach(o=>o.classList.toggle('selected', o.dataset.type === entry.type));
+      moodPicker.querySelectorAll('.mood-opt').forEach(o=>o.classList.toggle('selected', o.dataset.mood === entry.mood));
+      document.getElementById('ratingPicker').querySelectorAll('.star').forEach(s=>{
+        s.classList.toggle('on', parseInt(s.dataset.val) <= selectedRating);
+      });
+      document.getElementById('titleInput').value = entry.t;
+      document.getElementById('monthInput').value = entry.month;
+      document.getElementById('thoughtsInput').value = entry.note;
+      const remaining = 500 - entry.note.length;
+      charCounter.textContent = remaining >= 0 ? `${remaining} characters remaining` : 'thoughts are long...';
+      charCounter.style.color = remaining < 0 ? 'var(--pink-deep)' : 'var(--plum)';
+    } else {
+      resetEntryForm();
+      document.getElementById('entryModalTitle').textContent = 'What are you adding to the café?';
+      document.getElementById('submitEntryBtn').textContent = 'add to the shelf';
+    }
+    entryModal.classList.add('show');
+  }
+
+  document.getElementById('openAddBtn').addEventListener('click', ()=> openEntryModal('add'));
+  document.getElementById('fabBtn').addEventListener('click', ()=> openEntryModal('add'));
+  document.getElementById('closeEntryBtn').addEventListener('click', ()=> entryModal.classList.remove('show'));
+  entryModal.addEventListener('click', (e)=>{ if(e.target === entryModal) entryModal.classList.remove('show'); });
+
+  document.querySelectorAll('.type-opt').forEach(opt=>{
+    opt.addEventListener('click', ()=>{
+      document.querySelectorAll('.type-opt').forEach(o=>o.classList.remove('selected'));
+      opt.classList.add('selected');
+      selectedType = opt.dataset.type;
+    });
+  });
+
+  moodPicker.addEventListener('click', (e)=>{
+    const opt = e.target.closest('.mood-opt');
+    if(!opt) return;
+    const wasSelected = opt.classList.contains('selected');
+    moodPicker.querySelectorAll('.mood-opt').forEach(o=>o.classList.remove('selected'));
+    if(!wasSelected){
+      opt.classList.add('selected');
+      selectedMood = opt.dataset.mood;
+    } else {
+      selectedMood = null;
+    }
+  });
+
+  const ratingPicker = document.getElementById('ratingPicker');
+  ratingPicker.querySelectorAll('.star').forEach(star=>{
+    star.addEventListener('click', ()=>{
+      const val = parseInt(star.dataset.val);
+      selectedRating = (selectedRating === val) ? 0 : val;
+      ratingPicker.querySelectorAll('.star').forEach(s=>{
+        s.classList.toggle('on', parseInt(s.dataset.val) <= selectedRating);
+      });
+    });
+  });
+
+  document.getElementById('submitEntryBtn').addEventListener('click', async ()=>{
+    const title = document.getElementById('titleInput').value.trim();
+    const month = document.getElementById('monthInput').value;
+    const thoughts = document.getElementById('thoughtsInput').value.trim();
+    if(!title){ document.getElementById('titleInput').focus(); return; }
+
+    if(editingId){
+      const e = entries.find(x => x.id === editingId);
+      if(e){
+        e.t = title; e.type = selectedType; e.month = month;
+        e.note = thoughts || "no thoughts written yet.";
+        e.rating = selectedRating; e.mood = selectedMood;
+      }
+      showToast('✎ Entry updated!');
+    } else {
+      entries.push({
+        id: 'e' + Date.now(),
+        t: title, type: selectedType, month: month,
+        note: thoughts || "no thoughts written yet.",
+        rating: selectedRating, mood: selectedMood
+      });
+      showToast('☕ New entry added to the café!');
+    }
+    await saveEntries();
+    entryModal.classList.remove('show');
+    refreshAll();
+  });
+
+  // ---------- Detail modal ----------
+  const detailModal = document.getElementById('detailModal');
+  let currentDetailId = null;
+
+  function openDetail(id){
+    const e = entries.find(x => x.id === id);
+    if(!e) return;
+    currentDetailId = id;
+    const m = moodOf(e.mood);
+    document.getElementById('detailIcon').textContent = ICONS[e.type];
+    document.getElementById('detailTitle').textContent = e.t;
+    document.getElementById('detailMeta').textContent = `${e.type} · ${e.month}`;
+    document.getElementById('detailMood').textContent = m ? `felt ${m.icon} ${m.label}` : '';
+    document.getElementById('detailThoughts').textContent = e.note;
+    document.getElementById('detailRating').textContent = e.rating ? '★'.repeat(e.rating) + '☆'.repeat(5-e.rating) : '';
+    detailModal.classList.add('show');
+  }
+
+  document.getElementById('closeDetailBtn').addEventListener('click', ()=> detailModal.classList.remove('show'));
+  detailModal.addEventListener('click', (e)=>{ if(e.target === detailModal) detailModal.classList.remove('show'); });
+
+  document.getElementById('editEntryBtn').addEventListener('click', ()=>{
+    const e = entries.find(x => x.id === currentDetailId);
+    if(!e) return;
+    detailModal.classList.remove('show');
+    openEntryModal('edit', e);
+  });
+
+  document.getElementById('deleteEntryBtn').addEventListener('click', async ()=>{
+    if(confirm('Remove this entry permanently?')){
+      entries = entries.filter(e => e.id !== currentDetailId);
+      await saveEntries();
+      detailModal.classList.remove('show');
+      refreshAll();
+      showToast('🗑️ Entry removed');
+    }
+  });
+
+  // ---------- Memory Threads ----------
+  const btn = document.getElementById('findThreadBtn');
+  const resultBox = document.getElementById('threadResult');
+  const loadingNote = document.getElementById('loadingNote');
+
+  btn.addEventListener('click', async () => {
+    if(entries.length < 3){
+      resultBox.innerHTML = `Log a few more things first — threads need at least a handful of entries to find a real pattern in.`;
+      resultBox.classList.add('show');
+      return;
+    }
+    btn.disabled = true;
+    resultBox.classList.remove('show');
+    loadingNote.classList.add('show');
+
+    const log = entries.map(e => {
+      const m = moodOf(e.mood);
+      return `- [${e.month}, ${e.type}${m ? ', felt ' + m.label : ''}] "${e.t}": ${e.note}`;
+    }).join('\n');
+
+    const prompt = `Here is someone's personal log — books, films, music, and journal snippets, in order, sometimes with a mood attached:
+
+${log}
+
+Find ONE genuine, specific thematic thread connecting several of these entries across different mediums (not just all the journal entries, or all the films — it should cross mediums where possible). Do not force a connection if the entries genuinely don't share one.
+
+Write it in a warm, observant, second-person voice, like a friend who has been quietly paying attention — the way a person might describe a pattern you hadn't noticed in yourself. 2-3 sentences, under 65 words. No headers, no bullet points, no quotation marks around it, just the observation itself.`;
+
+    try {
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-6",
+          max_tokens: 300,
+          messages: [{ role: "user", content: prompt }]
+        })
+      });
+      const data = await response.json();
+      const textBlocks = (data.content || []).filter(b => b.type === "text").map(b => b.text);
+      const text = textBlocks.join("\n").trim() || "The thread is there, quietly, even when the words don't come easily.";
+
+      resultBox.innerHTML = `"${text}"<span class="margin-note">— noticed across ${entries.length} entries</span>`;
+      resultBox.classList.add('show');
+    } catch (err) {
+      resultBox.innerHTML = `Couldn't reach the café just now — try again in a moment.<span class="margin-note">connection failed</span>`;
+      resultBox.classList.add('show');
+    } finally {
+      loadingNote.classList.remove('show');
+      btn.disabled = false;
+    }
+  });
+
+  // ---------- Keyboard shortcuts ----------
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      if (!entryModal.classList.contains('show')) openEntryModal('add');
+    }
+    if (e.key === 'Escape') {
+      if (entryModal.classList.contains('show')) entryModal.classList.remove('show');
+      if (detailModal.classList.contains('show')) detailModal.classList.remove('show');
+    }
+  });
+
+  // ---------- Refresh all views ----------
+  function refreshAll(){
+    const activeChip = document.querySelector('.season-chip.active');
+    renderShelf(activeChip ? activeChip.dataset.season : 'all');
+    renderGhostShelf();
+    updateStats();
+    renderMonthSummary();
+    const currentSearch = document.getElementById('blogSearch').value.toLowerCase().trim();
+    renderBlog(currentSearch);
+    if(document.getElementById('view-year').classList.contains('active')) renderYear();
+  }
+
+  // ---------- Init ----------
+  (async function init(){
+    await loadEntries();
+    refreshAll();
+    // Prefill with a warm welcome entry if empty
+    if(entries.length === 0){
+      entries.push({
+        id: 'e' + Date.now(),
+        t: 'welcome to your story',
+        type: 'journal',
+        month: new Date().toLocaleString('default', { month: 'short' }),
+        note: 'this is your space now — every book, film, song, and quiet thought finds a home here. log something that moved you, and watch the threads emerge.',
+        rating: 0,
+        mood: 'hopeful'
+      });
+      await saveEntries();
+      refreshAll();
+    }
+  })();
+</script>
+</body>
+</html>
