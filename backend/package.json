@@ -4,9 +4,11 @@
   "description": "Backend API for StoryShelf Café",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
-  },
+  "start": "node server.js",
+  "dev": "nodemon server.js",
+  "postinstall": "prisma generate",
+  "vercel-build": "prisma generate"
+},
   "dependencies": {
     "@prisma/client": "^5.22.0",
     "cors": "^2.8.5",
