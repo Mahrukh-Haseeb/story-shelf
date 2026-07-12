@@ -236,15 +236,23 @@ Find ONE specific thematic thread that connects several of these entries. Write 
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📊 API endpoints:`);
-  console.log(`   GET    /api/entries     - Get all entries`);
-  console.log(`   GET    /api/entries/:id - Get single entry`);
-  console.log(`   POST   /api/entries     - Create entry`);
-  console.log(`   PUT    /api/entries/:id - Update entry`);
-  console.log(`   DELETE /api/entries/:id - Delete entry`);
-  console.log(`   GET    /api/stats       - Get statistics`);
-  console.log(`   GET    /api/health      - Health check`);
-  console.log(`   POST   /api/threads     - Memory Threads (Gemini AI)`);
-});
+// Only start a local listener when running on your own machine.
+// On Vercel, the platform calls the exported app directly as a
+// serverless function, so app.listen() is never used there.
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`📊 API endpoints:`);
+    console.log(`   GET    /api/entries     - Get all entries`);
+    console.log(`   GET    /api/entries/:id - Get single entry`);
+    console.log(`   POST   /api/entries     - Create entry`);
+    console.log(`   PUT    /api/entries/:id - Update entry`);
+    console.log(`   DELETE /api/entries/:id - Delete entry`);
+    console.log(`   GET    /api/stats       - Get statistics`);
+    console.log(`   GET    /api/health      - Health check`);
+    console.log(`   POST   /api/threads     - Memory Threads (Gemini AI)`);
+  });
+}
+
+// Required so backend/api/index.js can do: require('../server')
+module.exports = app;
