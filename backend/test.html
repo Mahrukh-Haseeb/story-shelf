@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test API</title>
+</head>
+<body>
+    <h1>Add Test Entry</h1>
+    <button onclick="addEntry()">Add Entry</button>
+    <h3>Result:</h3>
+    <pre id="result">Click the button above</pre>
+
+    <script>
+    async function addEntry() {
+        try {
+            const response = await fetch('http://localhost:3001/api/entries', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: "My First Book",
+                    type: "book",
+                    month: "Jul",
+                    note: "This is my first test entry!",
+                    rating: 4,
+                    mood: "hopeful"
+                })
+            });
+            const data = await response.json();
+            document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+        } catch (error) {
+            document.getElementById('result').textContent = 'Error: ' + error.message;
+        }
+    }
+    </script>
+</body>
+</html>
