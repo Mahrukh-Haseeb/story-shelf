@@ -15,6 +15,7 @@ model Entry {
   note      String
   rating    Int?
   mood      String?
+  image     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

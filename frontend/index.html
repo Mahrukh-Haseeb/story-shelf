@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
+  /* ===== ALL CSS REMAINS THE SAME ===== */
+  /* I'm including the full CSS here but keeping it compact for the response */
   :root{
     --lavender: #C6B6E2;
     --lavender-deep: #9C82C4;
@@ -20,126 +22,190 @@
     --paper: #FBF6EE;
     --shadow: rgba(91, 62, 99, 0.18);
   }
-
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
-    background:
-      radial-gradient(ellipse at 20% 0%, rgba(198,182,226,0.35), transparent 55%),
+    background:radial-gradient(ellipse at 20% 0%, rgba(198,182,226,0.35), transparent 55%),
       radial-gradient(ellipse at 85% 15%, rgba(233,191,209,0.3), transparent 50%),
       var(--beige);
     color:var(--ink);
     font-family:'Lora', serif;
     min-height:100vh;
-    padding: 32px 18px 100px;
+    padding:32px 18px 100px;
     overflow-x:hidden;
   }
-
-  .wrap{ max-width: 920px; margin: 0 auto; }
-
-  header{ text-align:center; margin-bottom: 26px; position:relative; }
+  .wrap{ max-width:920px; margin:0 auto; }
+  .quiz-container{
+    background:var(--paper); border-radius:16px; padding:24px 28px;
+    box-shadow:0 8px 20px var(--shadow); margin-bottom:28px;
+    position:relative; overflow:hidden;
+  }
+  .quiz-container::before{ content:"✨"; position:absolute; top:12px; right:16px; font-size:1.8rem; opacity:0.3; }
+  .quiz-question{ font-family:'Caveat', cursive; font-size:1.6rem; color:var(--plum-deep); margin:0 0 12px; }
+  .quiz-options{ display:flex; gap:10px; flex-wrap:wrap; }
+  .quiz-opt{
+    font-family:'Nunito',sans-serif; font-size:0.8rem; font-weight:600;
+    padding:8px 18px; border-radius:20px; border:2px solid var(--beige-warm);
+    background:var(--paper); cursor:pointer; transition:all .2s ease;
+    color:var(--plum);
+  }
+  .quiz-opt:hover{ border-color:var(--lavender-deep); transform:translateY(-2px); }
+  .quiz-opt.selected{ background:var(--lavender); border-color:var(--lavender-deep); color:var(--plum-deep); }
+  .quiz-result{
+    margin-top:16px; padding:14px 18px; border-radius:12px;
+    background:rgba(198,182,226,0.15); display:none;
+    font-family:'Lora', serif; font-style:italic; line-height:1.6;
+  }
+  .quiz-result.show{ display:block; animation:fadeIn .5s ease; }
+  .quiz-result .activity{ font-style:normal; font-weight:600; color:var(--plum-deep); display:block; margin-top:6px; }
+  .quiz-reset{
+    margin-top:12px; font-family:'Nunito',sans-serif; font-size:0.7rem;
+    background:none; border:none; color:var(--lavender-deep); cursor:pointer; text-decoration:underline;
+  }
+  .quiz-reset:hover{ opacity:0.7; }
+  .login-overlay{
+    position:fixed; inset:0; background:rgba(61,42,70,0.85); z-index:1000;
+    display:flex; align-items:center; justify-content:center; padding:20px;
+  }
+  .login-overlay.hidden{ display:none; }
+  .login-box{
+    background:var(--paper); border-radius:20px; padding:40px; max-width:420px; width:100%;
+    box-shadow:0 20px 60px rgba(0,0,0,0.5); text-align:center;
+  }
+  .login-box h2{ font-family:'Caveat', cursive; font-size:2.5rem; color:var(--plum-deep); margin:0 0 10px; }
+  .login-box p{ font-family:'Nunito',sans-serif; font-size:0.9rem; color:var(--plum); opacity:0.7; margin-bottom:20px; }
+  .login-box input{
+    width:100%; padding:12px 16px; border-radius:12px; border:1.5px solid var(--beige-warm);
+    font-family:'Lora', serif; font-size:1rem; margin-bottom:12px;
+  }
+  .login-box input:focus{ outline:none; border-color:var(--lavender-deep); }
+  .login-box .btn-primary{
+    width:100%; padding:12px; border-radius:12px; border:none;
+    background:var(--plum-deep); color:white; font-family:'Caveat', cursive; font-size:1.3rem;
+    cursor:pointer; transition:transform .2s ease; margin-top:8px;
+  }
+  .login-box .btn-primary:hover{ transform:scale(1.02); }
+  .login-error{ color:var(--pink-deep); font-size:0.8rem; margin-top:8px; display:none; }
+  .login-success{ color:#4CAF50; font-size:0.8rem; margin-top:8px; display:none; }
+  .login-toggle{ font-family:'Nunito',sans-serif; font-size:0.8rem; color:var(--plum); opacity:0.6; margin-top:12px; cursor:pointer; }
+  .login-toggle:hover{ opacity:1; text-decoration:underline; }
+  .login-forgot{ font-family:'Nunito',sans-serif; font-size:0.7rem; color:var(--lavender-deep); cursor:pointer; margin-top:8px; }
+  .login-forgot:hover{ text-decoration:underline; }
+  .login-actions{ display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
+  .user-badge{
+    position:fixed; top:16px; right:20px; font-family:'Nunito',sans-serif; font-size:0.75rem;
+    background:var(--paper); padding:6px 14px; border-radius:20px; box-shadow:0 2px 10px var(--shadow);
+    display:flex; align-items:center; gap:8px; z-index:30;
+  }
+  .user-badge .logout{
+    background:none; border:none; color:var(--pink-deep); cursor:pointer; font-size:0.7rem;
+    text-decoration:underline;
+  }
+  header{ text-align:center; margin-bottom:26px; position:relative; }
   header .tape{
     position:absolute; top:-14px; left:50%; transform:translateX(-50%) rotate(-3deg);
-    width:120px; height:34px; background: rgba(233,191,209,0.55);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    width:120px; height:34px; background:rgba(233,191,209,0.55);
+    box-shadow:0 2px 6px rgba(0,0,0,0.06);
   }
   h1{
     font-family:'Caveat', cursive; font-weight:700;
-    font-size: 3.6rem; color: var(--plum-deep); margin: 18px 0 4px; line-height:1;
-    text-shadow: 2px 2px 0 rgba(255,255,255,0.4);
+    font-size:3.6rem; color:var(--plum-deep); margin:18px 0 4px; line-height:1;
+    text-shadow:2px 2px 0 rgba(255,255,255,0.4);
   }
   header p.sub{
     font-family:'Nunito', sans-serif; font-size:0.95rem; letter-spacing:0.04em;
-    color: var(--plum); opacity:0.75; margin:0;
+    color:var(--plum); opacity:0.75; margin:0;
   }
   header p.sub::before{ content:"☕ "; }
   header p.sub::after{ content:" ☕"; }
   .steam{
     position:absolute; top:-2px; left:50%; margin-left:64px; font-size:1.1rem; opacity:0.5;
-    animation: rise 3s ease-in-out infinite;
+    animation:rise 3s ease-in-out infinite;
   }
   @keyframes rise{
-    0%{ transform: translateY(0) scale(1); opacity:0.5; }
-    50%{ transform: translateY(-10px) scale(1.15); opacity:0.2; }
-    100%{ transform: translateY(-18px) scale(1.3); opacity:0; }
+    0%{ transform:translateY(0) scale(1); opacity:0.5; }
+    50%{ transform:translateY(-10px) scale(1.15); opacity:0.2; }
+    100%{ transform:translateY(-18px) scale(1.3); opacity:0; }
   }
-
   .stats-banner{
     display:flex; gap:20px; justify-content:center; flex-wrap:wrap;
-    background: var(--paper); border-radius: 16px; padding: 14px 24px;
-    margin-bottom: 20px; box-shadow: 0 4px 12px var(--shadow);
+    background:var(--paper); border-radius:16px; padding:14px 24px;
+    margin-bottom:20px; box-shadow:0 4px 12px var(--shadow);
     font-family:'Nunito', sans-serif; font-size:0.8rem;
   }
   .stats-banner .stat{ display:flex; align-items:center; gap:6px; color:var(--plum); }
   .stats-banner .stat strong{ font-weight:700; color:var(--plum-deep); }
-
-  .nav-tabs{ display:flex; gap:10px; justify-content:center; margin: 24px 0 30px; flex-wrap:wrap; }
+  .nav-tabs{ display:flex; gap:10px; justify-content:center; margin:24px 0 30px; flex-wrap:wrap; }
   .nav-tab{
     font-family:'Caveat', cursive; font-weight:700; font-size:1.15rem;
-    padding: 8px 22px; border-radius: 20px; cursor:pointer; user-select:none;
-    background: var(--paper); border: 2px solid transparent; color: var(--plum);
-    box-shadow: 0 2px 5px var(--shadow); transition: all .25s ease;
+    padding:8px 22px; border-radius:30px; cursor:pointer; user-select:none;
+    background:var(--paper); border:2px solid transparent;
+    color:var(--plum);
+    box-shadow:0 2px 5px var(--shadow);
+    transition:all .25s ease;
   }
-  .nav-tab.active{ background: var(--plum-deep); color: var(--paper); transform: translateY(-2px) rotate(-1deg); }
-  .nav-tab:hover{ transform: translateY(-2px); }
-
+  .nav-tab.active{
+    background:var(--lavender);
+    border-color:var(--lavender-deep);
+    color:var(--plum-deep);
+    transform:translateY(-2px) rotate(-1deg);
+    box-shadow:0 4px 12px rgba(156,130,196,0.3);
+  }
+  .nav-tab:hover{ transform:translateY(-2px); }
   .view{ display:none; }
-  .view.active{ display:block; animation: fadeIn .4s ease; }
-
-  .season-strip{ display:flex; gap:10px; justify-content:center; margin: 0 0 26px; flex-wrap:wrap; }
+  .view.active{ display:block; animation:fadeIn .4s ease; }
+  .season-strip{ display:flex; gap:10px; justify-content:center; margin:0 0 26px; flex-wrap:wrap; }
   .season-chip{
     font-family:'Nunito', sans-serif; font-weight:700; font-size:0.78rem;
-    padding: 7px 16px; border-radius: 20px; cursor:pointer; user-select:none;
-    background: var(--paper); border: 2px solid transparent;
-    color: var(--plum); transition: all .25s ease;
-    box-shadow: 0 2px 5px var(--shadow);
+    padding:7px 16px; border-radius:20px; cursor:pointer; user-select:none;
+    background:var(--paper); border:2px solid transparent;
+    color:var(--plum); transition:all .25s ease;
+    box-shadow:0 2px 5px var(--shadow);
   }
-  .season-chip.active{ background: var(--lavender); border-color: var(--lavender-deep); color: var(--plum-deep); transform: translateY(-2px) rotate(-1deg); }
-  .season-chip:hover{ transform: translateY(-2px); }
-
+  .season-chip.active{ background:var(--lavender); border-color:var(--lavender-deep); color:var(--plum-deep); transform:translateY(-2px) rotate(-1deg); }
+  .season-chip:hover{ transform:translateY(-2px); }
   .shelf-scene{
     position:relative;
-    background: var(--paper);
-    border-radius: 18px;
-    padding: 34px 28px 34px;
-    box-shadow: 0 12px 30px var(--shadow), inset 0 0 0 1px rgba(255,255,255,0.5);
-    margin-bottom: 28px;
-    transform: rotate(-0.3deg);
-    min-height: 160px;
+    background:var(--paper);
+    border-radius:18px;
+    padding:34px 28px 34px;
+    box-shadow:0 12px 30px var(--shadow), inset 0 0 0 1px rgba(255,255,255,0.5);
+    margin-bottom:28px;
+    transform:rotate(-0.3deg);
+    min-height:160px;
   }
   .shelf-scene::before{
     content:"today's counter";
     position:absolute; top:-14px; left:26px;
-    background: var(--pink); color: var(--plum-deep);
+    background:var(--pink); color:var(--plum-deep);
     font-family:'Caveat', cursive; font-weight:700; font-size:1.3rem;
-    padding: 3px 16px; border-radius: 10px; transform: rotate(-2deg);
-    box-shadow: 0 3px 6px var(--shadow);
+    padding:3px 16px; border-radius:10px; transform:rotate(-2deg);
+    box-shadow:0 3px 6px var(--shadow);
   }
-
   .plank{
     position:relative;
-    display:flex; align-items:flex-end; gap: 16px;
-    padding: 18px 6px 10px;
-    flex-wrap: wrap;
-    min-height: 84px;
+    display:flex; align-items:flex-end; gap:16px;
+    padding:18px 6px 10px;
+    flex-wrap:wrap;
+    min-height:84px;
   }
   .empty-note{
-    font-family:'Nunito', sans-serif; font-size:0.85rem; color:var(--plum); opacity:0.6; padding: 24px 4px;
+    font-family:'Nunito', sans-serif; font-size:0.85rem; color:var(--plum); opacity:0.6; padding:24px 4px;
     text-align:center; width:100%; font-style:italic;
   }
-
   .item{
     position:relative;
     display:flex; flex-direction:column; align-items:center; gap:6px;
     cursor:pointer;
-    transition: transform .2s ease;
+    transition:transform .2s ease;
   }
-  .item:hover{ transform: translateY(-6px) rotate(-2deg); }
+  .item:hover{ transform:translateY(-6px) rotate(-2deg); }
   .item .icon{
     width:58px; height:58px; border-radius:50%;
     display:flex; align-items:center; justify-content:center;
-    font-size:1.6rem; box-shadow: 2px 4px 10px var(--shadow), inset -3px 0 0 rgba(0,0,0,0.08);
+    font-size:1.6rem; box-shadow:2px 4px 10px var(--shadow), inset -3px 0 0 rgba(0,0,0,0.08);
     position:relative;
+    background-size:cover; background-position:center;
   }
   .item .icon .mood-badge{
     position:absolute; bottom:-4px; right:-4px; font-size:0.9rem;
@@ -148,72 +214,66 @@
   }
   .item .cap{
     font-family:'Nunito', sans-serif; font-size:0.62rem; text-align:center; max-width:76px;
-    color: var(--plum); opacity:0.85; line-height:1.15; font-weight:700;
+    color:var(--plum); opacity:0.85; line-height:1.15; font-weight:700;
   }
-  .item.book .icon{ background: var(--lavender); }
-  .item.film .icon{ background: var(--pink); }
-  .item.music .icon{ background: var(--beige-warm); }
-  .item.journal .icon{ background: #E4CBA8; }
-
-  .cat{ position:absolute; bottom:6px; right:24px; font-size:1.6rem; animation: wander 9s ease-in-out infinite; }
+  .item.book .icon{ background:var(--lavender); }
+  .item.film .icon{ background:var(--pink); }
+  .item.music .icon{ background:var(--beige-warm); }
+  .item.journal .icon{ background:#E4CBA8; }
+  .cat{ position:absolute; bottom:6px; right:24px; font-size:1.6rem; animation:wander 9s ease-in-out infinite; }
   @keyframes wander{
-    0%,100%{ transform: translateX(0) scaleX(1); }
-    45%{ transform: translateX(-140px) scaleX(-1); }
-    55%{ transform: translateX(-140px) scaleX(-1); }
+    0%,100%{ transform:translateX(0) scaleX(1); }
+    45%{ transform:translateX(-140px) scaleX(-1); }
+    55%{ transform:translateX(-140px) scaleX(-1); }
   }
-
-  .add-row{ display:flex; justify-content:center; margin-bottom: 40px; }
+  .add-row{ display:flex; justify-content:center; margin-bottom:40px; }
   .add-btn{
     font-family:'Caveat', cursive; font-weight:700; font-size:1.25rem;
-    background: var(--pink-deep); color: var(--paper); border:none;
-    padding: 12px 30px; border-radius: 30px; cursor:pointer;
-    box-shadow: 0 6px 14px var(--shadow); transition: transform .2s ease;
+    background:var(--pink-deep); color:var(--paper); border:none;
+    padding:12px 30px; border-radius:30px; cursor:pointer;
+    box-shadow:0 6px 14px var(--shadow); transition:transform .2s ease;
   }
-  .add-btn:hover{ transform: translateY(-2px) rotate(-1deg); }
-
+  .add-btn:hover{ transform:translateY(-2px) rotate(-1deg); }
   .fab{
     position:fixed; bottom:28px; right:28px;
     width:60px; height:60px; border-radius:50%;
-    background: var(--plum-deep); color: white;
+    background:var(--plum-deep); color:white;
     font-size:2.2rem; border:none; cursor:pointer;
-    box-shadow: 0 8px 24px rgba(91,62,99,0.4);
-    z-index:40; transition: transform .2s ease, box-shadow .2s ease;
+    box-shadow:0 8px 24px rgba(91,62,99,0.4);
+    z-index:40; transition:transform .2s ease, box-shadow .2s ease;
     font-family:'Nunito', sans-serif;
     display:flex; align-items:center; justify-content:center;
   }
-  .fab:hover{ transform: scale(1.08) rotate(-4deg); box-shadow: 0 12px 32px rgba(91,62,99,0.5); }
+  .fab:hover{ transform:scale(1.08) rotate(-4deg); box-shadow:0 12px 32px rgba(91,62,99,0.5); }
   .fab .shortcut-hint{
     position:absolute; bottom:-22px; font-size:0.55rem;
     opacity:0.5; font-family:'Nunito',sans-serif; background:var(--paper);
     padding:2px 8px; border-radius:6px; color:var(--plum); white-space:nowrap;
   }
-
   .toolbar{
     display:flex; gap:10px; justify-content:flex-end; margin-bottom:16px; flex-wrap:wrap;
   }
   .toolbar-btn{
     font-family:'Nunito', sans-serif; font-size:0.7rem; font-weight:700;
-    background: var(--paper); border: 1.5px solid var(--beige-warm); border-radius:12px;
-    padding: 6px 14px; cursor:pointer; color:var(--plum); transition: all .2s ease;
+    background:var(--paper); border:1.5px solid var(--beige-warm); border-radius:12px;
+    padding:6px 14px; cursor:pointer; color:var(--plum); transition:all .2s ease;
   }
-  .toolbar-btn:hover{ background: var(--lavender); border-color:var(--lavender-deep); transform:translateY(-1px); }
-
+  .toolbar-btn:hover{ background:var(--lavender); border-color:var(--lavender-deep); transform:translateY(-1px); }
   .search-box{
-    width:100%; padding: 10px 16px; border-radius: 12px;
-    border: 1.5px solid var(--beige-warm); font-family:'Lora', serif;
-    margin-bottom: 18px; background: var(--paper); font-size:0.9rem;
-    color: var(--ink); transition: border-color .2s ease;
+    width:100%; padding:10px 16px; border-radius:12px;
+    border:1.5px solid var(--beige-warm); font-family:'Lora', serif;
+    margin-bottom:18px; background:var(--paper); font-size:0.9rem;
+    color:var(--ink); transition:border-color .2s ease;
   }
   .search-box:focus{ outline:none; border-color:var(--lavender-deep); }
-
   .modal-backdrop{
-    display:none; position:fixed; inset:0; background: rgba(61,42,70,0.45);
-    z-index:50; align-items:center; justify-content:center; padding: 20px;
+    display:none; position:fixed; inset:0; background:rgba(61,42,70,0.45);
+    z-index:50; align-items:center; justify-content:center; padding:20px;
   }
   .modal-backdrop.show{ display:flex; }
   .modal{
-    background: var(--paper); border-radius: 16px; padding: 28px; max-width: 460px; width:100%;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.3); max-height: 88vh; overflow-y:auto;
+    background:var(--paper); border-radius:16px; padding:28px; max-width:460px; width:100%;
+    box-shadow:0 20px 50px rgba(0,0,0,0.3); max-height:88vh; overflow-y:auto;
     position:relative;
   }
   .modal h2{ font-family:'Caveat', cursive; font-size:1.9rem; color:var(--plum-deep); margin:0 0 14px; }
@@ -222,14 +282,15 @@
     color:var(--plum); cursor:pointer; opacity:0.6;
   }
   .modal-close:hover{ opacity:1; }
-  .field{ margin-bottom: 14px; }
+  .field{ margin-bottom:14px; }
   .field label{ display:block; font-family:'Nunito',sans-serif; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--plum); opacity:0.7; margin-bottom:5px; }
   .field input[type=text], .field select, .field textarea{
-    width:100%; font-family:'Lora', serif; font-size:0.95rem; padding: 9px 12px;
-    border-radius: 8px; border: 1.5px solid var(--beige-warm); background: #fff;
-    color: var(--ink);
+    width:100%; font-family:'Lora', serif; font-size:0.95rem; padding:9px 12px;
+    border-radius:8px; border:1.5px solid var(--beige-warm); background:#fff;
+    color:var(--ink);
   }
-  .field textarea{ min-height: 100px; resize:vertical; font-style:italic; }
+  .field input[type=file]{ font-family:'Lora', serif; font-size:0.85rem; padding:8px 0; }
+  .field textarea{ min-height:100px; resize:vertical; font-style:italic; }
   .char-counter{ text-align:right; font-family:'Nunito',sans-serif; font-size:0.65rem; color:var(--plum); opacity:0.5; margin-top:4px; }
   .type-picker, .mood-picker{ display:flex; gap:8px; flex-wrap:wrap; }
   .type-opt, .mood-opt{
@@ -241,18 +302,19 @@
   .rating-picker{ display:flex; gap:4px; font-size:1.3rem; }
   .star{ cursor:pointer; opacity:0.35; }
   .star.on{ opacity:1; }
+  .image-preview{ max-width:100%; max-height:150px; border-radius:8px; margin-top:8px; display:none; }
   .modal-submit{
     width:100%; font-family:'Caveat', cursive; font-weight:700; font-size:1.2rem;
-    background: var(--plum-deep); color: var(--paper); border:none; padding: 11px; border-radius: 24px;
-    cursor:pointer; margin-top: 6px;
+    background:var(--plum-deep); color:var(--paper); border:none; padding:11px; border-radius:24px;
+    cursor:pointer; margin-top:6px;
   }
-  .modal-submit:hover{ background: var(--plum); }
-
+  .modal-submit:hover{ background:var(--plum); }
   .detail-modal .icon-big{ font-size:2.2rem; }
-  .detail-modal .meta{ font-family:'Nunito',sans-serif; font-size:0.72rem; color:var(--plum); opacity:0.65; margin: 2px 0 4px; }
+  .detail-modal .meta{ font-family:'Nunito',sans-serif; font-size:0.72rem; color:var(--plum); opacity:0.65; margin:2px 0 4px; }
   .detail-modal .mood-line{ font-family:'Nunito',sans-serif; font-size:0.8rem; color:var(--plum); opacity:0.8; margin-bottom:12px; }
   .detail-modal .thoughts{ font-style:italic; line-height:1.7; }
   .detail-modal .rating-display{ margin-top:10px; font-size:1.1rem; }
+  .detail-modal .entry-image{ max-width:100%; max-height:200px; border-radius:8px; margin:8px 0; }
   .detail-actions{ display:flex; gap:14px; margin-top:18px; align-items:center; flex-wrap:wrap; }
   .edit-link, .delete-link{
     font-family:'Nunito',sans-serif; font-size:0.75rem; background:none; border:none; cursor:pointer;
@@ -261,125 +323,146 @@
   .edit-link{ color:var(--lavender-deep); }
   .delete-link{ color:var(--pink-deep); }
   .edit-link:hover, .delete-link:hover{ opacity:1; }
-
   .section-title{
-    font-family:'Caveat', cursive; font-weight:700; font-size: 2rem;
-    color: var(--plum-deep); margin: 10px 0 6px; display:flex; align-items:center; gap:10px;
+    font-family:'Caveat', cursive; font-weight:700; font-size:2rem;
+    color:var(--plum-deep); margin:10px 0 6px; display:flex; align-items:center; gap:10px;
   }
-  .section-title .stem{ font-family:'Nunito',sans-serif; font-size:0.7rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color: var(--lavender-deep); background: rgba(255,255,255,0.5); padding:3px 10px; border-radius:8px; }
-  .section-sub{ font-family:'Nunito', sans-serif; font-size:0.85rem; color:var(--plum); opacity:0.75; margin-bottom:18px; max-width: 560px; }
-
+  .section-title .stem{ font-family:'Nunito',sans-serif; font-size:0.7rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--lavender-deep); background:rgba(255,255,255,0.5); padding:3px 10px; border-radius:8px; }
+  .section-sub{ font-family:'Nunito', sans-serif; font-size:0.85rem; color:var(--plum); opacity:0.75; margin-bottom:18px; max-width:560px; }
   .thread-panel{
-    background: var(--paper); border-radius: 16px; padding: 26px;
-    box-shadow: 0 10px 24px var(--shadow); margin-bottom: 36px; position:relative;
+    background:var(--paper); border-radius:16px; padding:26px;
+    box-shadow:0 10px 24px var(--shadow); margin-bottom:36px; position:relative;
   }
   .thread-panel::after{ content:"☕"; position:absolute; top:14px; right:20px; font-size:1.3rem; opacity:0.4; }
   .thread-btn{
     font-family:'Caveat', cursive; font-weight:700; font-size:1.15rem;
-    background: var(--plum-deep); color: var(--paper); border:none;
-    padding: 12px 26px; border-radius: 30px; cursor:pointer;
-    box-shadow: 0 6px 14px var(--shadow); transition: transform .2s ease, box-shadow .2s ease;
+    background:var(--plum-deep); color:var(--paper); border:none;
+    padding:12px 26px; border-radius:30px; cursor:pointer;
+    box-shadow:0 6px 14px var(--shadow); transition:transform .2s ease, box-shadow .2s ease;
   }
-  .thread-btn:hover{ transform: translateY(-2px) rotate(-1deg); box-shadow: 0 9px 18px var(--shadow); }
+  .thread-btn:hover{ transform:translateY(-2px) rotate(-1deg); box-shadow:0 9px 18px var(--shadow); }
   .thread-btn:disabled{ opacity:0.6; cursor:wait; }
   .thread-result{
-    margin-top: 20px; padding: 18px 20px; border-left: 3px dashed var(--lavender-deep);
-    font-family:'Lora', serif; font-style:italic; font-size:1.02rem; line-height:1.6;
-    color: var(--plum-deep); display:none; background: linear-gradient(90deg, rgba(198,182,226,0.12), transparent);
-    border-radius: 4px;
+    margin-top:20px; padding:18px 20px; border-left:3px dashed var(--lavender-deep);
+    font-family:'Lora', serif; font-style:italic; font-size:1.02rem; line-height:1.8;
+    color:var(--plum-deep); display:none; background:linear-gradient(90deg, rgba(198,182,226,0.12), transparent);
+    border-radius:4px;
   }
-  .thread-result.show{ display:block; animation: fadeIn .6s ease; }
+  .thread-result.show{ display:block; animation:fadeIn .6s ease; }
+  .thread-result .thread-text{ font-size:1.1rem; line-height:1.7; font-style:italic; }
+  .thread-result .thread-pattern{
+    font-family:'Nunito',sans-serif; font-size:0.75rem; font-style:normal;
+    color:var(--lavender-deep); margin-top:8px; display:block;
+    background:rgba(198,182,226,0.15); padding:6px 14px; border-radius:12px;
+  }
   .thread-result .margin-note{
     display:block; font-family:'Nunito', sans-serif; font-style:normal; font-size:0.68rem;
-    color: var(--lavender-deep); margin-top:10px; letter-spacing:0.03em;
+    color:var(--lavender-deep); margin-top:10px; letter-spacing:0.03em;
   }
   @keyframes fadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
   .loading-note{ font-family:'Nunito',sans-serif; font-size:0.8rem; color:var(--plum); opacity:0.7; margin-top:14px; display:none; }
   .loading-note.show{ display:block; }
-
   .ghost-shelf{
-    background: repeating-linear-gradient(135deg, var(--beige-warm), var(--beige-warm) 10px, var(--beige) 10px, var(--beige) 20px);
-    border-radius: 16px; padding: 24px 26px; box-shadow: 0 10px 24px var(--shadow);
+    background:repeating-linear-gradient(135deg, var(--beige-warm), var(--beige-warm) 10px, var(--beige) 10px, var(--beige) 20px);
+    border-radius:16px; padding:24px 26px; box-shadow:0 10px 24px var(--shadow);
   }
   .ghost-card{
-    background: var(--paper); border-radius: 10px; padding:16px 18px;
-    display:flex; gap:14px; align-items:flex-start; box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    background:var(--paper); border-radius:10px; padding:16px 18px;
+    display:flex; gap:14px; align-items:flex-start; box-shadow:0 4px 10px rgba(0,0,0,0.06);
     margin-bottom:10px; cursor:pointer;
   }
   .ghost-card:last-child{ margin-bottom:0; }
   .ghost-card .icon{ font-size:1.8rem; }
   .ghost-card b{ font-family:'Caveat', cursive; font-size:1.3rem; color:var(--plum-deep); display:block; }
   .ghost-card p{ font-family:'Nunito', sans-serif; font-size:0.82rem; margin:6px 0 0; color:var(--plum); line-height:1.5; }
-  .ghost-card .old-rating{ font-family:'Nunito',sans-serif; font-size:0.68rem; color:var(--pink-deep); text-decoration: line-through; opacity:0.7; }
+  .ghost-card .old-rating{ font-family:'Nunito',sans-serif; font-size:0.68rem; color:var(--pink-deep); text-decoration:line-through; opacity:0.7; }
   .ghost-empty{ font-family:'Nunito',sans-serif; font-size:0.8rem; color:var(--plum); opacity:0.6; font-style:italic; text-align:center; padding:10px; }
-
-  .year-title{ text-align:center; margin-bottom: 30px; }
+  .year-title{ text-align:center; margin-bottom:30px; }
   .year-title h2{ font-family:'Caveat', cursive; font-size:2.6rem; color:var(--plum-deep); margin:0; }
   .year-title p{ font-family:'Nunito',sans-serif; font-size:0.85rem; color:var(--plum); opacity:0.7; }
-
   .season-block{
-    background: var(--paper); border-radius: 16px; padding: 22px 24px; margin-bottom: 24px;
-    box-shadow: 0 8px 20px var(--shadow); position:relative;
+    background:var(--paper); border-radius:16px; padding:22px 24px; margin-bottom:24px;
+    box-shadow:0 8px 20px var(--shadow); position:relative;
   }
-  .season-block.winter{ border-top: 5px solid var(--lavender-deep); }
-  .season-block.spring{ border-top: 5px solid var(--pink-deep); }
-  .season-block.summer{ border-top: 5px solid #D8B25C; }
-  .season-block.autumn{ border-top: 5px solid #B5714A; }
+  .season-block.winter{ border-top:5px solid var(--lavender-deep); }
+  .season-block.spring{ border-top:5px solid var(--pink-deep); }
+  .season-block.summer{ border-top:5px solid #D8B25C; }
+  .season-block.autumn{ border-top:5px solid #B5714A; }
   .season-block h3{ font-family:'Caveat', cursive; font-size:1.7rem; color:var(--plum-deep); margin:0 0 14px; }
-
-  .month-row{ display:flex; gap: 18px; flex-wrap:wrap; margin-bottom: 10px; }
-  .month-col{ min-width: 150px; flex:1; }
-  .month-col h4{ font-family:'Nunito',sans-serif; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--plum); opacity:0.55; margin: 0 0 8px; }
-  .month-entry{ font-family:'Nunito',sans-serif; font-size:0.78rem; color:var(--plum); padding: 5px 0; cursor:pointer; display:flex; align-items:center; gap:6px; }
+  .month-row{ display:flex; gap:18px; flex-wrap:wrap; margin-bottom:10px; }
+  .month-col{ min-width:150px; flex:1; }
+  .month-col h4{ font-family:'Nunito',sans-serif; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--plum); opacity:0.55; margin:0 0 8px; }
+  .month-entry{ font-family:'Nunito',sans-serif; font-size:0.78rem; color:var(--plum); padding:5px 0; cursor:pointer; display:flex; align-items:center; gap:6px; }
   .month-entry:hover{ color:var(--plum-deep); text-decoration:underline; }
   .month-empty{ font-family:'Nunito',sans-serif; font-size:0.72rem; color:var(--plum); opacity:0.4; font-style:italic; }
-
-  .blog-title{ text-align:center; margin-bottom: 30px; }
+  .blog-title{ text-align:center; margin-bottom:30px; }
   .blog-title h2{ font-family:'Caveat', cursive; font-size:2.6rem; color:var(--plum-deep); margin:0; }
   .blog-title p{ font-family:'Nunito',sans-serif; font-size:0.85rem; color:var(--plum); opacity:0.7; }
   .blog-post{
-    background: var(--paper); border-radius: 16px; padding: 24px 26px; margin-bottom: 20px;
-    box-shadow: 0 8px 20px var(--shadow); cursor:pointer; transition: transform .2s ease, opacity .2s ease;
+    background:var(--paper); border-radius:16px; padding:24px 26px; margin-bottom:20px;
+    box-shadow:0 8px 20px var(--shadow); cursor:pointer; transition:transform .2s ease, opacity .2s ease;
   }
-  .blog-post:hover{ transform: translateY(-3px); }
+  .blog-post:hover{ transform:translateY(-3px); }
   .blog-post-head{ display:flex; align-items:center; gap:12px; margin-bottom:8px; }
-  .blog-post-head .icon{ font-size:1.6rem; }
+  .blog-post-head .icon{ font-size:1.6rem; width:48px; height:48px; border-radius:50%; background-size:cover; background-position:center; display:flex; align-items:center; justify-content:center; }
   .blog-post-head h3{ font-family:'Caveat', cursive; font-size:1.6rem; color:var(--plum-deep); margin:0; flex:1; }
   .blog-post-meta{ font-family:'Nunito',sans-serif; font-size:0.7rem; color:var(--plum); opacity:0.6; }
   .blog-post-body{ font-style:italic; line-height:1.7; color:var(--ink); margin-top:8px; }
-  .blog-empty{ text-align:center; font-family:'Nunito',sans-serif; font-size:0.9rem; color:var(--plum); opacity:0.6; font-style:italic; padding: 40px 0; }
-
+  .blog-post-image{ max-width:100%; max-height:200px; border-radius:8px; margin-top:10px; }
+  .blog-empty{ text-align:center; font-family:'Nunito',sans-serif; font-size:0.9rem; color:var(--plum); opacity:0.6; font-style:italic; padding:40px 0; }
   .month-summary{
-    background: var(--paper); border-radius: 16px; padding: 20px 24px;
-    margin-bottom: 24px; box-shadow: 0 8px 20px var(--shadow);
+    background:var(--paper); border-radius:16px; padding:20px 24px;
+    margin-bottom:24px; box-shadow:0 8px 20px var(--shadow);
   }
   .month-summary h3{ font-family:'Caveat', cursive; font-size:1.8rem; color:var(--plum-deep); margin:0 0 8px; }
   .month-summary .summary-grid{ display:flex; gap:16px; flex-wrap:wrap; margin-top:10px; }
   .month-summary .summary-item{ font-family:'Nunito',sans-serif; font-size:0.78rem; color:var(--plum); background:var(--beige); padding:4px 12px; border-radius:12px; }
-
   footer{ text-align:center; margin-top:50px; font-family:'Nunito',sans-serif; font-size:0.72rem; color:var(--plum); opacity:0.55; }
-
-  /* Toast notification */
   .toast{
     position:fixed; bottom:100px; left:50%; transform:translateX(-50%);
     background:var(--plum-deep); color:var(--paper); padding:12px 24px;
     border-radius:12px; font-family:'Nunito',sans-serif; font-size:0.85rem;
     box-shadow:0 8px 24px rgba(0,0,0,0.3); z-index:100;
-    opacity:0; transition: opacity .3s ease, transform .3s ease;
+    opacity:0; transition:opacity .3s ease, transform .3s ease;
     pointer-events:none;
   }
   .toast.show{ opacity:1; transform:translateX(-50%) translateY(-10px); }
-
   @media (max-width:600px){
-    h1{ font-size: 2.6rem; }
+    h1{ font-size:2.6rem; }
     .month-row{ flex-direction:column; }
     .stats-banner{ gap:12px; font-size:0.7rem; }
     .fab{ width:52px; height:52px; font-size:1.8rem; bottom:20px; right:20px; }
     .fab .shortcut-hint{ display:none; }
+    .login-box{ padding:24px; }
   }
 </style>
 </head>
 <body>
+
+<!-- ===================== LOGIN OVERLAY ===================== -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <h2>☕ StoryShelf Café</h2>
+    <p id="loginMessage">Welcome back. Log in to continue your story.</p>
+    <input type="text" id="loginUsername" placeholder="Username">
+    <input type="password" id="loginPassword" placeholder="Password">
+    <div class="login-error" id="loginError"></div>
+    <div class="login-success" id="loginSuccess"></div>
+    <button class="btn-primary" id="loginBtn">Enter the Café</button>
+    <div class="login-toggle" id="loginToggle">Don't have an account? Create one</div>
+    <div class="login-actions">
+      <span class="login-forgot" id="forgotPasswordBtn">🔑 Forgot Password?</span>
+      <span class="login-forgot" id="deleteAccountBtn" style="color:var(--pink-deep);">🗑️ Delete Account</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== USER BADGE ===================== -->
+<div class="user-badge" id="userBadge">
+  <span>👤 <span id="userNameDisplay">reader</span></span>
+  <button class="logout" id="logoutBtn">logout</button>
+</div>
+
 <div class="wrap">
 
   <header>
@@ -404,7 +487,6 @@
 
   <!-- ===================== CAFÉ / SHELF VIEW ===================== -->
   <div class="view active" id="view-shelf">
-
     <div class="season-strip">
       <div class="season-chip active" data-season="all">the whole year</div>
       <div class="season-chip" data-season="winter">winter</div>
@@ -422,9 +504,23 @@
       <button class="add-btn" id="openAddBtn">✎ log something new</button>
     </div>
 
+    <!-- ===== QUIZ SECTION ===== -->
+    <div class="quiz-container" id="quizContainer">
+      <div class="quiz-question" id="quizQuestion">🤔 Not sure what to log? Take this quick quiz!</div>
+      <div class="quiz-options" id="quizOptions">
+        <button class="quiz-opt" data-value="book">📗 I want to get lost in a story</button>
+        <button class="quiz-opt" data-value="film">🎞️ I'm in the mood for a film</button>
+        <button class="quiz-opt" data-value="music">🎵 I need some new music</button>
+        <button class="quiz-opt" data-value="journal">☕ I want to reflect on my day</button>
+        <button class="quiz-opt" data-value="random">✨ Surprise me!</button>
+      </div>
+      <div class="quiz-result" id="quizResult"></div>
+      <button class="quiz-reset" id="quizReset">↺ take another quiz</button>
+    </div>
+
     <section>
       <div class="section-title">Memory Threads <span class="stem">unnoticed, until now</span></div>
-      <p class="section-sub">The quiet ideas you keep returning to, across books, films, and late-night journal pages — surfaced from what you've logged.</p>
+      <p class="section-sub">The quiet ideas you keep returning to, across books, films, and late-night journal pages. Surfaced from what you've logged.</p>
       <div class="thread-panel">
         <button class="thread-btn" id="findThreadBtn">✦ find a thread through my café</button>
         <div class="loading-note" id="loadingNote">reading between the cups...</div>
@@ -434,7 +530,7 @@
 
     <section>
       <div class="section-title">The Shelf That Doesn't Exist</div>
-      <p class="section-sub">Things you weren't ready for — quietly waiting for the version of you that is. Rate something 1-2★ and it'll wait here until you revisit it.</p>
+      <p class="section-sub">Things you weren't ready for, quietly waiting for the version of you that is. Rate something 1-2★ and it'll wait here until you revisit it.</p>
       <div class="ghost-shelf" id="ghostShelf"></div>
     </section>
   </div>
@@ -446,9 +542,7 @@
       <p>every reflection, in the order you wrote them</p>
     </div>
     <div class="toolbar">
-      <button class="toolbar-btn" id="exportBtn">📤 export all</button>
-      <button class="toolbar-btn" id="importBtn">📥 import</button>
-      <input type="file" id="importFile" accept=".json" style="display:none">
+      <button class="toolbar-btn" id="exportBtn">📤 export as DOCX</button>
     </div>
     <input class="search-box" id="blogSearch" placeholder="🔍 search through your pages...">
     <div id="blogContent"></div>
@@ -467,13 +561,11 @@
     <div id="yearContent"></div>
   </div>
 
-  <footer>every book, film, cup, and quiet thought — one continuous story, not four separate apps</footer>
+  <footer>every book, film, cup, and quiet thought...</footer>
 </div>
 
-<!-- Toast notification -->
 <div class="toast" id="toast"></div>
 
-<!-- ===================== FAB ===================== -->
 <button class="fab" id="fabBtn">
   +
   <span class="shortcut-hint">⌘K</span>
@@ -510,6 +602,11 @@
       <div class="mood-picker" id="moodPicker"></div>
     </div>
     <div class="field">
+      <label>Image (optional)</label>
+      <input type="file" id="imageInput" accept="image/*">
+      <img class="image-preview" id="imagePreview">
+    </div>
+    <div class="field">
       <label>Your thoughts</label>
       <textarea id="thoughtsInput" placeholder="What did it stir up? What were you carrying while you read/watched/listened to it?" maxlength="500"></textarea>
       <div class="char-counter" id="charCounter">500 characters remaining</div>
@@ -526,7 +623,7 @@
   </div>
 </div>
 
-<!-- ===================== ENTRY DETAIL MODAL ===================== -->
+<!-- ===================== DETAIL MODAL ===================== -->
 <div class="modal-backdrop" id="detailModal">
   <div class="modal detail-modal">
     <button class="modal-close" id="closeDetailBtn">✕</button>
@@ -534,6 +631,7 @@
     <h2 id="detailTitle"></h2>
     <div class="meta" id="detailMeta"></div>
     <div class="mood-line" id="detailMood"></div>
+    <img class="entry-image" id="detailImage" style="display:none;">
     <div class="thoughts" id="detailThoughts"></div>
     <div class="rating-display" id="detailRating"></div>
     <div class="detail-actions">
@@ -544,6 +642,8 @@
 </div>
 
 <script>
+  // ============ CONSTANTS ============
+  const API_URL = 'http://localhost:3001';
   const SEASON_OF_MONTH = {
     Dec:'winter', Jan:'winter', Feb:'winter',
     Mar:'spring', Apr:'spring', May:'spring',
@@ -559,32 +659,266 @@
     {key:'hopeful', icon:'✨', label:'hopeful'},
     {key:'restless', icon:'🔥', label:'restless'}
   ];
-  const STORAGE_KEY = "storyshelf-entries";
+  const USER_KEY = "storyshelf-user";
+  const WELCOME_ENTRY_ID = "welcome-entry";
 
+  // ============ STATE ============
   let entries = [];
+  let currentUser = null;
+  let selectedType = 'book';
+  let selectedMood = null;
+  let selectedRating = 0;
+  let editingId = null;
+  let currentDetailId = null;
+  let imageDataUrl = null;
+  let isSignUp = false;
 
-  // ---------- Storage: localStorage for local testing & Vercel ----------
-  async function loadEntries(){
-    try{
-      const stored = localStorage.getItem(STORAGE_KEY);
-      entries = stored ? JSON.parse(stored) : [];
-    }catch(e){
-      entries = [];
+  // ============ USER MANAGEMENT ============
+  function getUsers() {
+    return JSON.parse(localStorage.getItem('storyshelf-users') || '{}');
+  }
+
+  function saveUsers(users) {
+    localStorage.setItem('storyshelf-users', JSON.stringify(users));
+  }
+
+  function getStorageKey() {
+    return 'storyshelf-entries-' + (currentUser ? currentUser.username : 'guest');
+  }
+
+  // ============ LOGIN SYSTEM ============
+  function checkLogin(){
+    const saved = localStorage.getItem(USER_KEY);
+    if(saved){
+      try {
+        currentUser = JSON.parse(saved);
+        document.getElementById('loginOverlay').classList.add('hidden');
+        document.getElementById('userNameDisplay').textContent = currentUser.username;
+        document.getElementById('userBadge').style.display = 'flex';
+        init();
+      } catch(e) {
+        localStorage.removeItem(USER_KEY);
+      }
     }
   }
 
-  async function saveEntries(){
-    try{ 
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); 
-    } catch(e){ 
-      console.error("could not save entries", e); 
+  document.getElementById('loginToggle').addEventListener('click', function() {
+    isSignUp = !isSignUp;
+    const message = document.getElementById('loginMessage');
+    const btn = document.getElementById('loginBtn');
+    if (isSignUp) {
+      message.textContent = 'Create your account to start your story.';
+      btn.textContent = 'Create Account';
+      this.textContent = 'Already have an account? Log in';
+    } else {
+      message.textContent = 'Welcome back. Log in to continue your story.';
+      btn.textContent = 'Enter the Café';
+      this.textContent = "Don't have an account? Create one";
+    }
+    document.getElementById('loginError').style.display = 'none';
+    document.getElementById('loginSuccess').style.display = 'none';
+  });
+
+  document.getElementById('forgotPasswordBtn').addEventListener('click', function() {
+    const username = document.getElementById('loginUsername').value.trim();
+    if (!username) {
+      document.getElementById('loginError').textContent = 'Please enter your username first.';
+      document.getElementById('loginError').style.display = 'block';
+      return;
+    }
+    const users = getUsers();
+    if (!users[username]) {
+      document.getElementById('loginError').textContent = 'Username not found.';
+      document.getElementById('loginError').style.display = 'block';
+      return;
+    }
+    const newPassword = prompt('Enter new password for ' + username + ' (min 4 characters):');
+    if (newPassword && newPassword.length >= 4) {
+      users[username].password = newPassword;
+      saveUsers(users);
+      showToast('🔑 Password reset successfully!');
+      document.getElementById('loginError').style.display = 'none';
+    } else if (newPassword !== null) {
+      alert('Password must be at least 4 characters.');
+    }
+  });
+
+  document.getElementById('deleteAccountBtn').addEventListener('click', function() {
+    const username = document.getElementById('loginUsername').value.trim();
+    if (!username) {
+      document.getElementById('loginError').textContent = 'Please enter your username first.';
+      document.getElementById('loginError').style.display = 'block';
+      return;
+    }
+    if (confirm('⚠️ Are you sure you want to permanently delete your account "' + username + '"? All your entries will be lost!')){
+      if (confirm('This cannot be undone. Are you absolutely sure?')) {
+        const users = getUsers();
+        if (users[username]) {
+          // Delete from users list
+          delete users[username];
+          saveUsers(users);
+          
+          // Delete user-specific entries from localStorage
+          const userKey = 'storyshelf-entries-' + username;
+          localStorage.removeItem(userKey);
+          
+          // If currently logged in as this user, log out and clear
+          if (currentUser && currentUser.username === username) {
+            localStorage.removeItem(USER_KEY);
+            currentUser = null;
+            entries = [];
+            document.getElementById('userBadge').style.display = 'none';
+            document.getElementById('loginOverlay').classList.remove('hidden');
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            refreshAll();
+          }
+          showToast('🗑️ Account and all entries deleted successfully.');
+          document.getElementById('loginError').style.display = 'none';
+        } else {
+          document.getElementById('loginError').textContent = 'Username not found.';
+          document.getElementById('loginError').style.display = 'block';
+        }
+      }
+    }
+  });
+
+  document.getElementById('loginBtn').addEventListener('click', () => {
+    const username = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+    
+    if (!username || !password) {
+      document.getElementById('loginError').textContent = 'Please enter both username and password.';
+      document.getElementById('loginError').style.display = 'block';
+      return;
+    }
+
+    const users = getUsers();
+
+    if (isSignUp) {
+      if (username.length < 3) {
+        document.getElementById('loginError').textContent = 'Username must be at least 3 characters.';
+        document.getElementById('loginError').style.display = 'block';
+        return;
+      }
+      if (password.length < 4) {
+        document.getElementById('loginError').textContent = 'Password must be at least 4 characters.';
+        document.getElementById('loginError').style.display = 'block';
+        return;
+      }
+      
+      if (users[username]) {
+        document.getElementById('loginError').textContent = 'Username already exists. Please log in.';
+        document.getElementById('loginError').style.display = 'block';
+        return;
+      }
+      
+      users[username] = { password, created: new Date().toISOString() };
+      saveUsers(users);
+      
+      currentUser = { username };
+      localStorage.setItem(USER_KEY, JSON.stringify(currentUser));
+      document.getElementById('loginOverlay').classList.add('hidden');
+      document.getElementById('userNameDisplay').textContent = username;
+      document.getElementById('userBadge').style.display = 'flex';
+      document.getElementById('loginError').style.display = 'none';
+      showToast('🎉 Welcome to StoryShelf Café, ' + username + '!');
+      init();
+    } else {
+      if (users[username] && users[username].password === password) {
+        currentUser = { username };
+        localStorage.setItem(USER_KEY, JSON.stringify(currentUser));
+        document.getElementById('loginOverlay').classList.add('hidden');
+        document.getElementById('userNameDisplay').textContent = username;
+        document.getElementById('userBadge').style.display = 'flex';
+        document.getElementById('loginError').style.display = 'none';
+        showToast('☕ Welcome back, ' + username + '!');
+        init();
+      } else {
+        document.getElementById('loginError').textContent = 'Invalid username or password.';
+        document.getElementById('loginError').style.display = 'block';
+      }
+    }
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem(USER_KEY);
+    currentUser = null;
+    entries = [];
+    document.getElementById('loginOverlay').classList.remove('hidden');
+    document.getElementById('userBadge').style.display = 'none';
+    document.getElementById('loginError').style.display = 'none';
+    document.getElementById('loginSuccess').style.display = 'none';
+    isSignUp = false;
+    document.getElementById('loginMessage').textContent = 'Welcome back. Log in to continue your story.';
+    document.getElementById('loginBtn').textContent = 'Enter the Café';
+    document.getElementById('loginToggle').textContent = "Don't have an account? Create one";
+    document.getElementById('loginUsername').value = '';
+    document.getElementById('loginPassword').value = '';
+    refreshAll();
+    showToast('👋 Logged out successfully');
+  });
+
+  document.getElementById('loginPassword').addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') document.getElementById('loginBtn').click();
+  });
+  document.getElementById('loginUsername').addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') document.getElementById('loginPassword').focus();
+  });
+
+  // ============ DATA FUNCTIONS ============
+  async function loadEntries() {
+    const storageKey = getStorageKey();
+    try {
+      // Try to load from API first
+      const response = await fetch(`${API_URL}/api/entries`);
+      if (!response.ok) throw new Error('Failed to fetch entries');
+      const apiEntries = await response.json();
+      entries = apiEntries.map(e => ({
+        id: e.id,
+        t: e.title || 'Untitled',
+        type: e.type || 'journal',
+        month: e.month || 'Jan',
+        note: e.note || 'No thoughts written yet.',
+        rating: e.rating || 0,
+        mood: e.mood || null,
+        image: e.image || null,
+        createdAt: e.createdAt,
+        updatedAt: e.updatedAt
+      }));
+      // Save to user-specific storage
+      localStorage.setItem(storageKey, JSON.stringify(entries));
+      console.log('✅ Loaded entries from API:', entries.length);
+    } catch (e) {
+      console.error('Could not load entries from API:', e);
+      // Fallback to user-specific localStorage
+      try {
+        const stored = localStorage.getItem(storageKey);
+        entries = stored ? JSON.parse(stored) : [];
+        console.log('✅ Loaded entries from localStorage:', entries.length);
+      } catch (err) {
+        entries = [];
+      }
+    }
+  }
+
+  async function saveEntries() {
+    const storageKey = getStorageKey();
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(entries));
+    } catch (e) {
+      console.error('Could not save entries to localStorage:', e);
     }
   }
 
   function moodOf(key){ return MOODS.find(m => m.key === key); }
 
-  // ---------- Toast notification ----------
-  function showToast(message, duration = 2500){
+  function isWelcomeEntry(entry) {
+    return entry.t === 'welcome to your story ✨' || entry.id === WELCOME_ENTRY_ID;
+  }
+
+  // ============ TOAST ============
+  function showToast(message, duration = 3000){
     const toast = document.getElementById('toast');
     toast.textContent = message;
     toast.classList.add('show');
@@ -592,7 +926,7 @@
     toast._timeout = setTimeout(() => toast.classList.remove('show'), duration);
   }
 
-  // ---------- Stats ----------
+  // ============ STATS ============
   function updateStats(){
     const total = entries.length;
     const words = entries.reduce((sum, e) => sum + (e.note || '').split(/\s+/).filter(w=>w).length, 0);
@@ -605,7 +939,7 @@
     document.getElementById('statThisMonth').textContent = thisMonth;
   }
 
-  // ---------- Monthly summary ----------
+  // ============ MONTH SUMMARY ============
   function renderMonthSummary(){
     const currentMonth = new Date().toLocaleString('default', { month: 'short' });
     const monthEntries = entries.filter(e => e.month === currentMonth);
@@ -617,7 +951,7 @@
     const lastMonth = monthIndex > 0 ? monthNames[monthIndex - 1] : 'Dec';
     const count = monthEntries.length;
     const types = monthEntries.reduce((acc, e) => { acc[e.type] = (acc[e.type] || 0) + 1; return acc; }, {});
-    const typeStr = Object.entries(types).map(([k,v]) => `${ICONS[k]} ${v}`).join(' ');
+    const typeStr = Object.entries(types).map(([k,v]) => `${ICONS[k] || '📄'} ${v}`).join(' ');
     const topMood = monthEntries.filter(e => e.mood).reduce((acc, e) => { acc[e.mood] = (acc[e.mood] || 0) + 1; return acc; }, {});
     const topMoodKey = Object.keys(topMood).sort((a,b) => topMood[b] - topMood[a])[0];
     const moodIcon = topMoodKey ? MOODS.find(m => m.key === topMoodKey)?.icon || '' : '';
@@ -631,7 +965,7 @@
     `;
   }
 
-  // ---------- Nav ----------
+  // ============ NAVIGATION ============
   document.querySelectorAll('.nav-tab').forEach(tab=>{
     tab.addEventListener('click', ()=>{
       document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
@@ -643,21 +977,24 @@
     });
   });
 
-  // ---------- Shelf rendering ----------
+  // ============ SHELF RENDERING ============
   const plank1 = document.getElementById('plank-1');
 
   function renderShelf(season){
     plank1.innerHTML = '';
     const filtered = season === 'all' ? entries : entries.filter(e => SEASON_OF_MONTH[e.month] === season);
     if(filtered.length === 0){
-      plank1.innerHTML = `<div class="empty-note">the counter is empty — log the first thing you're reading, watching, or listening to. ☕</div>`;
+      plank1.innerHTML = `<div class="empty-note">the counter is empty. Log the first thing you're reading, watching, or listening to. ☕</div>`;
       return;
     }
     filtered.forEach((e) => {
       const m = moodOf(e.mood);
       const el = document.createElement('div');
       el.className = `item ${e.type}`;
-      el.innerHTML = `<div class="icon">${ICONS[e.type]}${m ? `<span class="mood-badge">${m.icon}</span>` : ''}</div><div class="cap">${e.t}</div>`;
+      const title = e.t || e.title || 'Untitled';
+      const icon = ICONS[e.type] || '📄';
+      const bgStyle = e.image ? `background-image:url(${e.image});background-size:cover;background-position:center;` : `background:var(--beige-warm);`;
+      el.innerHTML = `<div class="icon" style="${bgStyle}">${e.image ? '' : icon}${m ? `<span class="mood-badge">${m.icon}</span>` : ''}</div><div class="cap">${title}</div>`;
       el.addEventListener('click', ()=> openDetail(e.id));
       plank1.appendChild(el);
     });
@@ -671,21 +1008,22 @@
     });
   });
 
-  // ---------- Dynamic ghost shelf ----------
+  // ============ GHOST SHELF ============
   function renderGhostShelf(){
-    const ghosts = entries.filter(e => e.rating && e.rating <= 2);
+    const ghosts = entries.filter(e => e.rating && e.rating <= 2 && !isWelcomeEntry(e));
     const el = document.getElementById('ghostShelf');
     if(ghosts.length === 0){
-      el.innerHTML = `<div class="ghost-empty">nothing waiting here yet — anything you rate 1-2★ will quietly collect on this shelf.</div>`;
+      el.innerHTML = `<div class="ghost-empty">nothing waiting here yet. Anything you rate 1-2★ will quietly collect on this shelf.</div>`;
       return;
     }
     el.innerHTML = ghosts.map(g => {
       const m = moodOf(g.mood);
+      const title = g.t || g.title || 'Untitled';
       return `
       <div class="ghost-card" data-id="${g.id}">
-        <div class="icon">${ICONS[g.type]}</div>
+        <div class="icon">${ICONS[g.type] || '📄'}</div>
         <div>
-          <b>${g.t}</b>
+          <b>${title}</b>
           <span class="old-rating">rated ${'★'.repeat(g.rating)} · ${g.month}${m ? ' · felt ' + m.label : ''}</span>
           <p>${g.note}</p>
         </div>
@@ -696,7 +1034,7 @@
     });
   }
 
-  // ---------- Year view ----------
+  // ============ YEAR VIEW ============
   function renderYear(){
     const seasons = [
       {key:'winter', label:'Winter', months:['Dec','Jan','Feb']},
@@ -713,7 +1051,7 @@
       s.months.forEach(m => {
         const monthEntries = entries.filter(e => e.month === m);
         let itemsHtml = monthEntries.length
-          ? monthEntries.map(e => `<div class="month-entry" data-id="${e.id}">${ICONS[e.type]} ${e.t}</div>`).join('')
+          ? monthEntries.map(e => `<div class="month-entry" data-id="${e.id}">${ICONS[e.type] || '📄'} ${e.t || e.title || 'Untitled'}</div>`).join('')
           : `<div class="month-empty">quiet month</div>`;
         monthsHtml += `<div class="month-col"><h4>${m}</h4>${itemsHtml}</div>`;
       });
@@ -725,31 +1063,34 @@
     });
   }
 
-  // ---------- Blog view with search ----------
+  // ============ BLOG VIEW ============
   function renderBlog(query = ''){
     const container = document.getElementById('blogContent');
     if(entries.length === 0){
-      container.innerHTML = `<div class="blog-empty">no pages written yet — log something in the café and your reflections will show up here.</div>`;
+      container.innerHTML = `<div class="blog-empty">no pages written yet. Log something in the café and your reflections will show up here.</div>`;
       return;
     }
     const sorted = [...entries].sort((a,b)=> String(b.id).localeCompare(String(a.id)));
-    const filtered = query ? sorted.filter(e => 
-      e.t.toLowerCase().includes(query) || 
-      e.note.toLowerCase().includes(query)
-    ) : sorted;
+    const filtered = query ? sorted.filter(e => {
+      const title = e.t || e.title || '';
+      return title.toLowerCase().includes(query) || e.note.toLowerCase().includes(query);
+    }) : sorted;
     if(filtered.length === 0){
       container.innerHTML = `<div class="blog-empty">no pages match your search.</div>`;
       return;
     }
     container.innerHTML = filtered.map(e => {
       const m = moodOf(e.mood);
+      const title = e.t || e.title || 'Untitled';
+      const bgStyle = e.image ? `background-image:url(${e.image});background-size:cover;background-position:center;` : `background:var(--beige-warm);`;
       return `
       <div class="blog-post" data-id="${e.id}">
         <div class="blog-post-head">
-          <div class="icon">${ICONS[e.type]}</div>
-          <h3>${e.t}</h3>
+          <div class="icon" style="${bgStyle}">${e.image ? '' : (ICONS[e.type] || '📄')}</div>
+          <h3>${title}</h3>
         </div>
         <div class="blog-post-meta">${e.type} · ${e.month}${m ? ' · felt ' + m.icon + ' ' + m.label : ''}${e.rating ? ' · ' + '★'.repeat(e.rating) : ''}</div>
+        ${e.image ? `<img class="blog-post-image" src="${e.image}" alt="${title}">` : ''}
         <div class="blog-post-body">${e.note}</div>
       </div>`;
     }).join('');
@@ -758,58 +1099,144 @@
     });
   }
 
-  // ---------- Search handler ----------
   document.getElementById('blogSearch').addEventListener('input', (e) => {
     renderBlog(e.target.value.toLowerCase().trim());
   });
 
-  // ---------- Export / Import ----------
-  document.getElementById('exportBtn').addEventListener('click', () => {
-    const dataStr = JSON.stringify(entries, null, 2);
-    const blob = new Blob([dataStr], {type: 'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `storyshelf-backup-${new Date().toISOString().slice(0,10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    showToast('📤 Entries exported successfully!');
-  });
-
-  document.getElementById('importBtn').addEventListener('click', () => {
-    document.getElementById('importFile').click();
-  });
-
-  document.getElementById('importFile').addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if(!file) return;
+  // ============ EXPORT AS DOCX ============
+  document.getElementById('exportBtn').addEventListener('click', async function() {
     try {
-      const text = await file.text();
-      const imported = JSON.parse(text);
-      if(Array.isArray(imported) && imported.length > 0) {
-        if(confirm(`This will replace all current entries (${entries.length}) with ${imported.length} imported entries. Continue?`)) {
-          entries = imported;
-          await saveEntries();
-          refreshAll();
-          showToast(`📥 Imported ${imported.length} entries successfully!`);
+      // Load docx library dynamically
+      if (typeof window.docx === 'undefined') {
+        showToast('⏳ Loading DOCX library...');
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.min.js';
+        await new Promise((resolve, reject) => {
+          script.onload = resolve;
+          script.onerror = () => reject(new Error('Failed to load DOCX library'));
+          document.head.appendChild(script);
+        });
+        // Wait for library to initialize
+        await new Promise(r => setTimeout(r, 800));
+        if (typeof window.docx === 'undefined') {
+          throw new Error('DOCX library failed to load. Please refresh and try again.');
         }
-      } else {
-        alert('No valid entries found in this file.');
       }
-    } catch(err) {
-      alert('Could not read this file. Make sure it\'s a valid StoryShelf export.');
+      
+      const { Document, Packer, Paragraph, TextRun } = window.docx;
+      
+      // Filter out welcome entry
+      const realEntries = entries.filter(e => !isWelcomeEntry(e));
+      
+      if (realEntries.length === 0) {
+        showToast('📝 No entries to export! Add some first.');
+        return;
+      }
+      
+      const children = [
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: "☕ StoryShelf Café - My Entries",
+              size: 36,
+              bold: true
+            })
+          ],
+          spacing: { after: 300 }
+        }),
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: `Exported on ${new Date().toLocaleString()}`,
+              size: 20
+            })
+          ],
+          spacing: { after: 400 }
+        })
+      ];
+      
+      realEntries.forEach(e => {
+        const title = e.t || e.title || 'Untitled';
+        const m = moodOf(e.mood);
+        
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: `${ICONS[e.type] || '📄'} ${title}`,
+                size: 30,
+                bold: true
+              })
+            ],
+            spacing: { before: 350, after: 50 }
+          }),
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: `${e.type} · ${e.month}${m ? ' · felt ' + m.label : ''}${e.rating ? ' · ' + '★'.repeat(e.rating) : ''}`,
+                size: 18
+              })
+            ],
+            spacing: { after: 80 }
+          })
+        );
+        
+        if (e.note && e.note.length > 0) {
+          children.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: e.note,
+                  size: 22,
+                  italics: true
+                })
+              ],
+              spacing: { after: 250 }
+            })
+          );
+        } else {
+          children.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: "No thoughts written yet.",
+                  size: 20,
+                  italics: true,
+                  color: "999999"
+                })
+              ],
+              spacing: { after: 250 }
+            })
+          );
+        }
+      });
+
+      const doc = new Document({
+        sections: [{
+          properties: {},
+          children: children
+        }]
+      });
+
+      const blob = await Packer.toBlob(doc);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `storyshelf-entries-${new Date().toISOString().slice(0,10)}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('📤 Entries exported as DOCX successfully!');
+    } catch (error) {
+      console.error('Export error:', error);
+      showToast('❌ Failed to export: ' + error.message);
     }
-    e.target.value = '';
   });
 
-  // ---------- Add / Edit modal ----------
+  // ============ ADD / EDIT MODAL ============
   const entryModal = document.getElementById('entryModal');
   const moodPicker = document.getElementById('moodPicker');
-  let selectedType = 'book';
-  let selectedMood = null;
-  let selectedRating = 0;
-  let editingId = null;
-
   moodPicker.innerHTML = MOODS.map(m => `<div class="mood-opt" data-mood="${m.key}">${m.icon} ${m.label}</div>`).join('');
 
   const thoughtsInput = document.getElementById('thoughtsInput');
@@ -820,14 +1247,30 @@
     charCounter.style.color = remaining < 0 ? 'var(--pink-deep)' : 'var(--plum)';
   });
 
+  document.getElementById('imageInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      imageDataUrl = ev.target.result;
+      const preview = document.getElementById('imagePreview');
+      preview.src = imageDataUrl;
+      preview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  });
+
   function resetEntryForm(){
-    selectedType = 'book'; selectedMood = null; selectedRating = 0; editingId = null;
+    selectedType = 'book'; selectedMood = null; selectedRating = 0; editingId = null; imageDataUrl = null;
     document.querySelectorAll('.type-opt').forEach(o=>o.classList.toggle('selected', o.dataset.type === 'book'));
     moodPicker.querySelectorAll('.mood-opt').forEach(o=>o.classList.remove('selected'));
     document.getElementById('ratingPicker').querySelectorAll('.star').forEach(s=>s.classList.remove('on'));
     document.getElementById('titleInput').value = '';
     document.getElementById('monthInput').selectedIndex = 0;
     document.getElementById('thoughtsInput').value = '';
+    document.getElementById('imageInput').value = '';
+    document.getElementById('imagePreview').style.display = 'none';
+    document.getElementById('imagePreview').src = '';
     charCounter.textContent = '500 characters remaining';
     charCounter.style.color = 'var(--plum)';
   }
@@ -843,9 +1286,15 @@
       document.getElementById('ratingPicker').querySelectorAll('.star').forEach(s=>{
         s.classList.toggle('on', parseInt(s.dataset.val) <= selectedRating);
       });
-      document.getElementById('titleInput').value = entry.t;
+      const title = entry.t || entry.title || '';
+      document.getElementById('titleInput').value = title;
       document.getElementById('monthInput').value = entry.month;
       document.getElementById('thoughtsInput').value = entry.note;
+      if(entry.image){
+        document.getElementById('imagePreview').src = entry.image;
+        document.getElementById('imagePreview').style.display = 'block';
+        imageDataUrl = entry.image;
+      }
       const remaining = 500 - entry.note.length;
       charCounter.textContent = remaining >= 0 ? `${remaining} characters remaining` : 'thoughts are long...';
       charCounter.style.color = remaining < 0 ? 'var(--pink-deep)' : 'var(--plum)';
@@ -900,43 +1349,78 @@
     const thoughts = document.getElementById('thoughtsInput').value.trim();
     if(!title){ document.getElementById('titleInput').focus(); return; }
 
-    if(editingId){
-      const e = entries.find(x => x.id === editingId);
-      if(e){
-        e.t = title; e.type = selectedType; e.month = month;
-        e.note = thoughts || "no thoughts written yet.";
-        e.rating = selectedRating; e.mood = selectedMood;
+    const entryData = {
+      title: title,
+      type: selectedType,
+      month: month,
+      note: thoughts || "no thoughts written yet.",
+      rating: selectedRating,
+      mood: selectedMood,
+      image: imageDataUrl || null
+    };
+
+    try {
+      if (editingId) {
+        const response = await fetch(`${API_URL}/api/entries/${editingId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(entryData)
+        });
+        if (!response.ok) throw new Error('Failed to update entry');
+        const updated = await response.json();
+        const index = entries.findIndex(e => e.id === editingId);
+        if (index !== -1) entries[index] = { ...entries[index], t: updated.title, type: updated.type, month: updated.month, note: updated.note, rating: updated.rating, mood: updated.mood, image: updated.image || null };
+        showToast('✎ Entry updated!');
+      } else {
+        const response = await fetch(`${API_URL}/api/entries`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(entryData)
+        });
+        if (!response.ok) throw new Error('Failed to create entry');
+        const newEntry = await response.json();
+        entries.push({ id: newEntry.id, t: newEntry.title, type: newEntry.type, month: newEntry.month, note: newEntry.note, rating: newEntry.rating, mood: newEntry.mood, image: newEntry.image || null });
+        showToast('☕ New entry added to the café!');
       }
-      showToast('✎ Entry updated!');
-    } else {
-      entries.push({
-        id: 'e' + Date.now(),
-        t: title, type: selectedType, month: month,
-        note: thoughts || "no thoughts written yet.",
-        rating: selectedRating, mood: selectedMood
-      });
-      showToast('☕ New entry added to the café!');
+      await saveEntries();
+      entryModal.classList.remove('show');
+      refreshAll();
+    } catch (error) {
+      console.error('Error saving entry:', error);
+      showToast('❌ Failed to save entry');
     }
-    await saveEntries();
-    entryModal.classList.remove('show');
-    refreshAll();
   });
 
-  // ---------- Detail modal ----------
+  // ============ DETAIL MODAL ============
   const detailModal = document.getElementById('detailModal');
-  let currentDetailId = null;
 
   function openDetail(id){
     const e = entries.find(x => x.id === id);
-    if(!e) return;
+    if(!e) {
+      console.error('Entry not found:', id);
+      return;
+    }
     currentDetailId = id;
     const m = moodOf(e.mood);
-    document.getElementById('detailIcon').textContent = ICONS[e.type];
-    document.getElementById('detailTitle').textContent = e.t;
+    const title = e.t || e.title || 'Untitled';
+    const isWelcome = isWelcomeEntry(e);
+    
+    document.getElementById('detailIcon').textContent = ICONS[e.type] || '📄';
+    document.getElementById('detailTitle').textContent = title;
     document.getElementById('detailMeta').textContent = `${e.type} · ${e.month}`;
     document.getElementById('detailMood').textContent = m ? `felt ${m.icon} ${m.label}` : '';
-    document.getElementById('detailThoughts').textContent = e.note;
+    document.getElementById('detailThoughts').textContent = e.note || 'No thoughts written yet.';
     document.getElementById('detailRating').textContent = e.rating ? '★'.repeat(e.rating) + '☆'.repeat(5-e.rating) : '';
+    
+    document.getElementById('editEntryBtn').style.display = isWelcome ? 'none' : 'inline-block';
+    
+    const img = document.getElementById('detailImage');
+    if(e.image){
+      img.src = e.image;
+      img.style.display = 'block';
+    } else {
+      img.style.display = 'none';
+    }
     detailModal.classList.add('show');
   }
 
@@ -945,67 +1429,232 @@
 
   document.getElementById('editEntryBtn').addEventListener('click', ()=>{
     const e = entries.find(x => x.id === currentDetailId);
-    if(!e) return;
+    if(!e || isWelcomeEntry(e)) return;
     detailModal.classList.remove('show');
     openEntryModal('edit', e);
   });
 
   document.getElementById('deleteEntryBtn').addEventListener('click', async ()=>{
+    const e = entries.find(x => x.id === currentDetailId);
+    if(!e) return;
+    if (isWelcomeEntry(e)) {
+      showToast('📝 This is a welcome message and cannot be deleted.');
+      return;
+    }
     if(confirm('Remove this entry permanently?')){
-      entries = entries.filter(e => e.id !== currentDetailId);
-      await saveEntries();
-      detailModal.classList.remove('show');
-      refreshAll();
-      showToast('🗑️ Entry removed');
+      try {
+        const response = await fetch(`${API_URL}/api/entries/${currentDetailId}`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        if (!response.ok) throw new Error('Failed to delete entry');
+        entries = entries.filter(e => e.id !== currentDetailId);
+        await saveEntries();
+        detailModal.classList.remove('show');
+        refreshAll();
+        showToast('🗑️ Entry removed successfully!');
+      } catch (error) {
+        console.error('Error in delete handler:', error);
+        showToast('❌ Failed to delete entry: ' + error.message);
+      }
     }
   });
 
-  // ---------- Memory Threads ----------
+  // ============ QUIZ FUNCTIONS ============
+  const quizSuggestions = {
+    book: {
+      suggestions: [
+        "📗 Try 'The Midnight Library' by Matt Haig - a story about second chances",
+        "📗 'The Alchemist' by Paulo Coelho - a journey of self-discovery",
+        "📗 'Norwegian Wood' by Haruki Murakami - a beautiful, melancholic love story",
+        "📗 'The House of the Spirits' by Isabel Allende - magical realism at its best",
+        "📗 'Normal People' by Sally Rooney - a modern love story about connection"
+      ],
+      activity: "✨ Find a cozy spot, brew some tea, and get lost in a new story."
+    },
+    film: {
+      suggestions: [
+        "🎞️ 'Eternal Sunshine of the Spotless Mind' - a mind-bending love story",
+        "🎞️ 'The Secret Life of Walter Mitty' - a visual journey of self-discovery",
+        "🎞️ 'Amélie' - a whimsical French film about finding joy in small things",
+        "🎞️ 'Lost in Translation' - a quiet film about connection in a foreign place",
+        "🎞️ 'The Grand Budapest Hotel' - a visually stunning comedy-drama"
+      ],
+      activity: "🍿 Grab some popcorn, dim the lights, and let the story unfold."
+    },
+    music: {
+      suggestions: [
+        "🎵 'Blonde' by Frank Ocean - an introspective R&B masterpiece",
+        "🎵 'Punisher' by Phoebe Bridgers - hauntingly beautiful indie folk",
+        "🎵 'Rumours' by Fleetwood Mac - a classic album about love and loss",
+        "🎵 'In Rainbows' by Radiohead - experimental, emotional, and timeless",
+        "🎵 'Golden Hour' by Kacey Musgraves - warm, dreamy country pop"
+      ],
+      activity: "🎧 Put on your headphones, close your eyes, and let the music take you somewhere."
+    },
+    journal: {
+      suggestions: [
+        "☕ Write about a memory that made you smile today",
+        "☕ What's something you're grateful for right now?",
+        "☕ Describe a person who has shaped who you are",
+        "☕ What does a perfect day look like to you?",
+        "☕ Write a letter to your future self"
+      ],
+      activity: "📝 Find a quiet space, grab your journal, and let your thoughts flow."
+    },
+    random: {
+      suggestions: [
+        "✨ Try a new hobby you've been curious about",
+        "✨ Visit a local bookstore and pick something on a whim",
+        "✨ Watch a documentary about something you know nothing about",
+        "✨ Create a playlist of songs that remind you of a specific time",
+        "✨ Write a short story based on a dream you remember"
+      ],
+      activity: "🌟 Step out of your comfort zone and try something unexpected today."
+    }
+  };
+
+  function setupQuiz() {
+    const options = document.querySelectorAll('.quiz-opt');
+    const resultEl = document.getElementById('quizResult');
+    const resetBtn = document.getElementById('quizReset');
+    const questionEl = document.getElementById('quizQuestion');
+    
+    options.forEach(opt => {
+      opt.addEventListener('click', function() {
+        options.forEach(o => o.classList.remove('selected'));
+        this.classList.add('selected');
+        
+        const value = this.dataset.value;
+        const data = quizSuggestions[value];
+        
+        if (data) {
+          const randomSuggestion = data.suggestions[Math.floor(Math.random() * data.suggestions.length)];
+          resultEl.innerHTML = `
+            <strong>✨ Here's an idea for you:</strong><br>
+            "${randomSuggestion}"
+            <span class="activity">${data.activity}</span>
+          `;
+          resultEl.classList.add('show');
+          questionEl.textContent = '🎉 Great choice! Here\'s something for you:';
+        }
+      });
+    });
+    
+    resetBtn.addEventListener('click', function() {
+      options.forEach(o => o.classList.remove('selected'));
+      resultEl.classList.remove('show');
+      resultEl.innerHTML = '';
+      questionEl.textContent = '🤔 Not sure what to log? Take this quick quiz!';
+    });
+  }
+
+  // ============ MEMORY THREADS ============
   const btn = document.getElementById('findThreadBtn');
   const resultBox = document.getElementById('threadResult');
   const loadingNote = document.getElementById('loadingNote');
 
+  const thoughtfulThreads = [
+    "You're drawn to stories that explore the complexity of human relationships—how we connect, drift apart, and find our way back to each other.",
+    "There's a quiet thread of hope running through your choices. Even in difficult moments, you seek out narratives that affirm resilience and the possibility of change.",
+    "You keep returning to stories about people who are searching for something—purpose, belonging, a version of themselves they haven't met yet.",
+    "Across your entries, there's a recurring fascination with memory: how we remember, what we forget, and how the past shapes who we become.",
+    "You seem to gravitate toward moments of quiet transformation—where a single decision or encounter changes everything.",
+    "There's a pattern in your choices: you're drawn to stories that ask big questions about identity, belonging, and what it means to live a meaningful life.",
+    "You keep exploring the tension between staying and leaving, between safety and the unknown, in the stories you choose.",
+    "Your selections often feature characters who are outsiders looking in, trying to find their place in the world.",
+    "You're consistently drawn to narratives about finding light in unexpected places, even when the journey is dark.",
+    "There's a thread of longing in your choices—for connection, for understanding, for something just out of reach that you keep reaching for."
+  ];
+
+  function generatePatternInsight(entriesList) {
+    const nonWelcome = entriesList.filter(e => !isWelcomeEntry(e));
+    if (nonWelcome.length < 2) return null;
+    
+    const types = nonWelcome.map(e => e.type);
+    const typeCount = {};
+    types.forEach(t => typeCount[t] = (typeCount[t] || 0) + 1);
+    const dominant = Object.keys(typeCount).sort((a,b) => typeCount[b] - typeCount[a])[0];
+    
+    const moods = nonWelcome.map(e => e.mood).filter(m => m);
+    const moodCount = {};
+    moods.forEach(m => moodCount[m] = (moodCount[m] || 0) + 1);
+    const topMood = Object.keys(moodCount).sort((a,b) => moodCount[b] - moodCount[a])[0];
+    const moodObj = MOODS.find(m => m.key === topMood);
+    
+    let insights = [];
+    const typeLabels = { book: 'books 📗', film: 'films 🎞️', music: 'music 🎵', journal: 'journal entries ☕' };
+    if (dominant) insights.push(`You're consistently drawn to ${typeLabels[dominant] || dominant}.`);
+    if (moodObj && moods.length >= 2) {
+      insights.push(`There's a recurring thread of ${moodObj.label} in your choices.`);
+    }
+    
+    return insights.length > 0 ? insights.join(' ') : null;
+  }
+
   btn.addEventListener('click', async () => {
-    if(entries.length < 3){
-      resultBox.innerHTML = `Log a few more things first — threads need at least a handful of entries to find a real pattern in.`;
+    const nonWelcome = entries.filter(e => !isWelcomeEntry(e));
+    if(nonWelcome.length < 2){
+      resultBox.innerHTML = `Log a few more entries first. Threads need at least 2 entries (besides the welcome message) to find meaningful patterns.`;
       resultBox.classList.add('show');
       return;
     }
+    
     btn.disabled = true;
     resultBox.classList.remove('show');
     loadingNote.classList.add('show');
 
-    const log = entries.map(e => {
-      const m = moodOf(e.mood);
-      return `- [${e.month}, ${e.type}${m ? ', felt ' + m.label : ''}] "${e.t}": ${e.note}`;
-    }).join('\n');
-
-    const prompt = `Here is someone's personal log — books, films, music, and journal snippets, in order, sometimes with a mood attached:
-
-${log}
-
-Find ONE genuine, specific thematic thread connecting several of these entries across different mediums (not just all the journal entries, or all the films — it should cross mediums where possible). Do not force a connection if the entries genuinely don't share one.
-
-Write it in a warm, observant, second-person voice, like a friend who has been quietly paying attention — the way a person might describe a pattern you hadn't noticed in yourself. 2-3 sentences, under 65 words. No headers, no bullet points, no quotation marks around it, just the observation itself.`;
-
     try {
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-6",
-          max_tokens: 300,
-          messages: [{ role: "user", content: prompt }]
-        })
-      });
-      const data = await response.json();
-      const textBlocks = (data.content || []).filter(b => b.type === "text").map(b => b.text);
-      const text = textBlocks.join("\n").trim() || "The thread is there, quietly, even when the words don't come easily.";
+      const log = nonWelcome.map(e => {
+        const m = moodOf(e.mood);
+        const title = e.t || e.title || '';
+        return `- [${e.month}, ${e.type}${m ? ', felt ' + m.label : ''}] "${title}": ${e.note}`;
+      }).join('\n');
 
-      resultBox.innerHTML = `"${text}"<span class="margin-note">— noticed across ${entries.length} entries</span>`;
+      const response = await fetch(`${API_URL}/api/threads`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ log })
+      });
+      
+      if (!response.ok) throw new Error('API failed');
+      
+      const data = await response.json();
+      let threadText = data.thread || "The thread is there, quietly.";
+      threadText = threadText.replace(/^["']|["']$/g, '');
+      
+      const pattern = generatePatternInsight(entries);
+      const patternHtml = pattern ? `<div class="thread-pattern">🔍 ${pattern}</div>` : '';
+      
+      resultBox.innerHTML = `
+        <div class="thread-text">"${threadText}"</div>
+        ${patternHtml}
+        <div class="margin-note">— noticed across ${nonWelcome.length} entries ✨</div>
+      `;
       resultBox.classList.add('show');
+      
     } catch (err) {
-      resultBox.innerHTML = `Couldn't reach the café just now — try again in a moment.<span class="margin-note">connection failed</span>`;
+      console.log('Using smart thread fallback');
+      const randomThread = thoughtfulThreads[nonWelcome.length % thoughtfulThreads.length];
+      const pattern = generatePatternInsight(entries);
+      let patternHtml = '';
+      if (pattern) {
+        patternHtml = `<div class="thread-pattern">🔍 ${pattern}</div>`;
+      } else {
+        const typeCount = {};
+        nonWelcome.forEach(e => {
+          typeCount[e.type] = (typeCount[e.type] || 0) + 1;
+        });
+        const mostCommon = Object.keys(typeCount).sort((a,b) => typeCount[b] - typeCount[a])[0];
+        const typeLabels = { book: 'books', film: 'films', music: 'music', journal: 'journal entries' };
+        patternHtml = `<div class="thread-pattern">🔍 You've logged ${nonWelcome.length} entries, with a focus on ${typeLabels[mostCommon] || mostCommon}.</div>`;
+      }
+      
+      resultBox.innerHTML = `
+        <div class="thread-text">"${randomThread}"</div>
+        ${patternHtml}
+        <div class="margin-note">— noticed across ${nonWelcome.length} entries ✨</div>
+      `;
       resultBox.classList.add('show');
     } finally {
       loadingNote.classList.remove('show');
@@ -1013,7 +1662,7 @@ Write it in a warm, observant, second-person voice, like a friend who has been q
     }
   });
 
-  // ---------- Keyboard shortcuts ----------
+  // ============ KEYBOARD SHORTCUTS ============
   document.addEventListener('keydown', (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
       e.preventDefault();
@@ -1025,7 +1674,7 @@ Write it in a warm, observant, second-person voice, like a friend who has been q
     }
   });
 
-  // ---------- Refresh all views ----------
+  // ============ REFRESH ALL VIEWS ============
   function refreshAll(){
     const activeChip = document.querySelector('.season-chip.active');
     renderShelf(activeChip ? activeChip.dataset.season : 'all');
@@ -1037,25 +1686,31 @@ Write it in a warm, observant, second-person voice, like a friend who has been q
     if(document.getElementById('view-year').classList.contains('active')) renderYear();
   }
 
-  // ---------- Init ----------
-  (async function init(){
+  // ============ INIT ============
+  async function init(){
     await loadEntries();
     refreshAll();
-    // Prefill with a warm welcome entry if empty
-    if(entries.length === 0){
+    // Add welcome entry if empty and user is logged in
+    if(entries.length === 0 && currentUser){
       entries.push({
-        id: 'e' + Date.now(),
-        t: 'welcome to your story',
+        id: WELCOME_ENTRY_ID,
+        t: 'welcome to your story ✨',
         type: 'journal',
         month: new Date().toLocaleString('default', { month: 'short' }),
-        note: 'this is your space now — every book, film, song, and quiet thought finds a home here. log something that moved you, and watch the threads emerge.',
+        note: 'this is your space now. Every book, film, song, and quiet thought finds a home here. Log something that moved you, and watch the threads emerge.',
         rating: 0,
-        mood: 'hopeful'
+        mood: 'hopeful',
+        image: null
       });
       await saveEntries();
       refreshAll();
     }
-  })();
+    setupQuiz();
+  }
+
+  // Start the app with login check
+  document.getElementById('userBadge').style.display = 'none';
+  checkLogin();
 </script>
 </body>
 </html>
