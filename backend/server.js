@@ -9,6 +9,11 @@ const app = express();
 const prisma = new PrismaClient();
 const PORT = process.env.PORT || 3001;
 
+// For Vercel serverless environment
+if (process.env.VERCEL) {
+  prisma.$connect().catch(err => console.error('Prisma connection error:', err));
+}
+
 app.use(cors());
 app.use(express.json({ limit: '50mb' })); // Increased limit for images
 
