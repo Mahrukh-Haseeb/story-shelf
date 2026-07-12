@@ -1,30 +1,28 @@
 # ☕ StoryShelf Café
 
-A living café where your life becomes a story — log the books, films, music, and journal entries that shape you, and let AI find the quiet threads connecting them.
+A living café where your life becomes a story. Log the books, films, music, and journal entries that shape you, and let AI find the quiet threads connecting them.
 
 Built for United Hacks V7.
 
 ## Live Demo
 
 - **App**: https://story-shelf-nine.vercel.app
-- **Backend API**: https://story-shelf-backend.vercel.app
 
 ## What it does
 
 - Log books, films, music, and journal entries with mood, rating, and reflections
-- **Memory Threads** — uses the Gemini API to read across your entries and surface a genuine thematic pattern in what you keep returning to
-- **The Shelf That Doesn't Exist** — anything rated 1-2 stars quietly waits on a "ghost shelf" until you're ready to revisit it
-- **Your Year** — a seasonal breakdown of everything you've logged, month by month
-- **The Blog** — a searchable, chronological view of every reflection you've written
-- A quick quiz to help you decide what to log when you're not sure what's on your mind
+- **Memory Threads**: uses the Gemini API to read across your entries and surface a genuine thematic pattern in what you keep returning to
+- **The Shelf That Doesn't Exist**: anything rated 1-2 stars quietly waits on a "ghost shelf" until you're ready to revisit it
+- **Your Year**: a seasonal breakdown of everything you've logged, month by month
+- **The Blog**: a searchable, chronological view of every reflection you've written
 
 ## Tech stack
 
 - **Frontend**: HTML / CSS / vanilla JavaScript, deployed on Vercel
-- **Backend**: Node.js + Express (deployed as a Vercel serverless function)
+- **Backend**: Node.js + Express
 - **Database**: PostgreSQL via Supabase
 - **ORM**: Prisma
-- **AI**: Google Gemini API (Memory Threads feature)
+- **AI**: Google Gemini API
 
 ## Project structure
 
@@ -66,7 +64,7 @@ Just open `frontend/index.html` in a browser, or serve it with any static server
 
 ## Known limitations
 
-- Entries are currently shared across all logged-in accounts — the login/signup system exists, but entries aren't yet scoped to individual users. This is the top priority for a post-hackathon iteration.
+- Entries are currently shared across all logged-in accounts. The login/signup system exists, but entries aren't yet scoped to individual users. This is the top priority for a post-hackathon iteration.
 
 ## API endpoints
 
